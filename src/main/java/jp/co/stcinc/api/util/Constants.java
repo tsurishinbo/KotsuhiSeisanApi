@@ -26,5 +26,23 @@ public final class Constants {
     public static final String STS_COMPLETE = "3";  // 承認済
     public static final String STS_RETURN   = "4";  // 差戻し
 
+    /**
+     * エラーコード
+     */
+    public static final String ERR_COD_PARAM   = "E001";
+    public static final String ERR_COD_AUTH    = "E002";
+    public static final String ERR_COD_ALREADY = "E003";
+    
+    public static final String ERR_COD_SYSTEM  = "E999";
+    
+    /**
+     * エラーメッセージ
+     */
+    public static final String ERR_MSG_PARAM   = "Invalid parameter";
+    public static final String ERR_MSG_AUTH    = "Authentication failed";
+    public static final String ERR_MSG_ALREADY = "Already authenticated";
+
+    public static final String ERR_MSG_SYSTEM  = "System failed";
+
 
 }

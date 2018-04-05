@@ -1,11 +1,13 @@
 package jp.co.stcinc.api.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 交通費申請明細DTO
  */
+@XmlRootElement
 public class ApplyDetailDto {
 
     // 利用日

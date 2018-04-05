@@ -1,5 +1,6 @@
 package jp.co.stcinc.api.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 認証APIリクエスト用DTO
  */
+@XmlRootElement
 public class AuthRequestDto {
 
     // 社員番号

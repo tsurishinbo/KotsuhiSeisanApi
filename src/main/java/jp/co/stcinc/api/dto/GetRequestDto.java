@@ -1,5 +1,6 @@
 package jp.co.stcinc.api.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import jp.co.stcinc.api.util.Constants;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 交通費申請取得APIリクエスト用API
  */
+@XmlRootElement
 public class GetRequestDto {
 
     // 社員番号
