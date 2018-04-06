@@ -3,6 +3,7 @@ package jp.co.stcinc.api.dto;
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
 import jp.co.stcinc.api.util.Constants;
+import jp.co.stcinc.api.util.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -43,15 +44,18 @@ public class ApplyRequestDto {
             return false;
         }
         // 交通費申請明細リスト
+        if (list.size() == 0) {
+            return false;
+        }
         for (ApplyDetailDto dto : list) {
             // 利用日
             if (StringUtils.isEmpty(dto.getUsed_date())) {
                 return false;
             }
-            if (!StringUtils.isNumeric(dto.getUsed_date())) {
+            if (StringUtils.length(dto.getUsed_date()) != 8) {
                 return false;
             }
-            if (StringUtils.length(dto.getUsed_date()) != 8) {
+            if (!DateUtils.checkDateFormat(dto.getUsed_date(), "yyyyMMddHHmmss")) {
                 return false;
             }
             // 出張場所

@@ -9,7 +9,7 @@ import lombok.Setter;
  * 交通費申請取得APIレスポンス用DTO
  */
 @XmlRootElement
-public class GetResponseDto {
+public class SearchResponseDto {
 
     // 処理結果
     @Getter @Setter

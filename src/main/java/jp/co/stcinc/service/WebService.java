@@ -2,11 +2,6 @@ package jp.co.stcinc.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -19,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import jp.co.stcinc.api.dto.AuthRequestDto;
 import jp.co.stcinc.api.dto.AuthResponseDto;
+import jp.co.stcinc.api.dto.ReleaseRequestDto;
+import jp.co.stcinc.api.dto.ReleaseResponseDto;
 import jp.co.stcinc.api.entity.MEmployee;
 import jp.co.stcinc.api.entity.TAuth;
 import jp.co.stcinc.api.exception.KotsuhiSeisanApiException;
@@ -59,21 +56,20 @@ public class WebService {
         
         AuthResponseDto responseDto = new AuthResponseDto();
 
-        // システム日付を取得
-        String nowDate = DateUtils.getNowDate();
-        // システム日付＋1時間を取得
-        String newExpire = DateUtils.getAddHourDate(1);
-        // リクエストパラメータを取得
-        AuthRequestDto requestDto = JsonUtils.parseJson(AuthRequestDto.class, param);
-        
-        // リクエストパラメータチェック
-        if (requestDto == null || !requestDto.checkParam()) {
-            // 異常終了レスポンス（パラメータ不正）
-            responseDto.SetErrorParam();
-            return JsonUtils.makeJson(responseDto);
-        }
-        
         try {
+            // システム日付を取得
+            String nowDate = DateUtils.getNowDate();
+            // システム日付＋1時間を取得
+            String newExpire = DateUtils.getAddHourDate(1);
+            
+            // リクエストパラメータを取得
+            AuthRequestDto requestDto = JsonUtils.parseJson(AuthRequestDto.class, param);
+            // リクエストパラメータチェック
+            if (requestDto == null || !requestDto.checkParam()) {
+                // 異常終了レスポンス（パラメータ不正）
+                responseDto.SetErrorParam();
+                return JsonUtils.makeJson(responseDto);
+            }
             // リクエストパラメータから社員番号、パスワードを取得
             Integer empNo = Integer.parseInt(requestDto.getEmp_no());
             String password = requestDto.getPassword();
@@ -85,7 +81,7 @@ public class WebService {
                 responseDto.SetErrorAuth();
                 return JsonUtils.makeJson(responseDto);
             }
-
+            
             // トークンを作成
             String newToken = makeToken(empNo.toString() + nowDate);
             
@@ -98,29 +94,29 @@ public class WebService {
                 newAuth.setToken(newToken);
                 newAuth.setExpire(newExpire);
                 tAuthFacade.create(newAuth);
-                
             } else {
+                // 認証情報からトークンと有効期限を取得
                 String token = auth.getToken();
                 String expire = auth.getExpire();
                 // 認証解除済 または 有効期限切れ
-                if ((token == null && expire == null) || (Integer.parseInt(expire) < Integer.parseInt(nowDate))) {
+                if ((token == null && expire == null) || (Long.parseLong(expire) < Long.parseLong(nowDate))) {
                     // 認証情報を更新
                     auth.setToken(newToken);
                     auth.setExpire(newExpire);
                     tAuthFacade.edit(auth);
-                    
                 } else {
                     // 異常終了レスポンス（認証済）
                     responseDto.SetErrorAlready();
                     return JsonUtils.makeJson(responseDto);
                 }
             }
-           
+
             // 正常終了レスポンス
             responseDto.SetSuccessResult(newToken);
             return JsonUtils.makeJson(responseDto);
             
-        } catch (KotsuhiSeisanApiException e) {
+        } catch (Exception e) {
+            // 異常終了レスポンス（システム例外）
             responseDto.SetErrorSystem();
             return JsonUtils.makeJson(responseDto);
         }
@@ -137,7 +133,43 @@ public class WebService {
     @Produces(MediaType.APPLICATION_JSON)
     public String release(String param) {
 
-        return null;
+        ReleaseResponseDto responseDto = new ReleaseResponseDto();
+        
+        try {
+            // リクエストパラメータを取得
+            ReleaseRequestDto requestDto = JsonUtils.parseJson(ReleaseRequestDto.class, param);
+            // リクエストパラメータチェック
+            if (requestDto == null || !requestDto.checkParam()) {
+                // 異常終了レスポンス（パラメータ不正）
+                responseDto.SetErrorParam();
+                return JsonUtils.makeJson(responseDto);
+            }
+            // リクエストパラメータから社員番号、トークンを取得
+            Integer empNo = Integer.parseInt(requestDto.getEmp_no());
+            String token = requestDto.getToken();
+
+            // 認証テーブルから認証情報を取得
+            TAuth auth = tAuthFacade.getAuthInfo(empNo, token);
+            if (auth != null) {
+                // 認証情報を更新
+                auth.setToken(null);
+                auth.setExpire(null);
+                tAuthFacade.edit(auth);
+            } else {
+                // 異常終了レスポンス（認証解除失敗）
+                responseDto.SetErrorRelease();
+                return JsonUtils.makeJson(responseDto);
+            }
+
+            // 正常終了レスポンス
+            responseDto.SetSuccessResult();
+            return JsonUtils.makeJson(responseDto);
+            
+        } catch (Exception e) {
+            // 異常終了レスポンス（システム例外）
+            responseDto.SetErrorSystem();
+            return JsonUtils.makeJson(responseDto);
+        }
     }
     
     /**

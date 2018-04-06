@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>認証API呼出</title>
+        <title>認証解除API呼出</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="./scripts/jquery-1.10.2.min.js"></script>
         <script type="text/javascript">
         <!--
             function doAction() {
                 // APIのURL
-                var url = "http://localhost:8080/KotsuhiSeisanApi/resources/application/auth";
+                var url = "http://localhost:8080/KotsuhiSeisanApi/resources/application/release";
                 
                 // リクエストパラメータ作成
                 var request = {
                    emp_no: $("#emp_no").val(),
-                   password: $("#password").val()
+                   token: $("#token").val()
                 };
                 $("#request_param").val(JSON.stringify(request, null, "    "));
                 
                 // API呼出
                 $.ajax({
-                    type: 'post',
+                    type: 'put',
                     url: url,
                     data: JSON.stringify(request),
                     contentType: 'application/json',
@@ -39,16 +39,16 @@
         </script>
     </head>
     <body>
-        <h3>認証API呼出</h3>
+        <h3>認証解除API呼出</h3>
         <hr>
         <table>
             <tr>
                 <td>社員番号</td>
                 <td><input type="text" id="emp_no" /></td>
-            </tr>    
+            </tr>
             <tr>
-                <td>パスワード</td>
-                <td><input type="text" id="password" /></td>
+                <td>トークン</td>
+                <td><input type="text" id="token" size="50"/></td>
             </tr>    
         </table>
         <input type="button" value="API呼出" onclick="doAction()" />

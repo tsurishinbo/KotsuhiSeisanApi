@@ -1,5 +1,6 @@
 package jp.co.stcinc.api.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -34,5 +35,22 @@ public class DateUtils {
         
         return sdf.format(c.getTime());
     }
+    
+    /**
+     * 日付として正しいかをチェックする
+     * @param value チェックする日付
+     * @param format 日付の書式
+     * @return チェック結果
+     */
+    public static boolean checkDateFormat(String value, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        try {
+            sdf.setLenient(false);
+            sdf.parse(value);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    } 
     
 }

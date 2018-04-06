@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TAuth.findAll", query = "SELECT t FROM TAuth t")
     , @NamedQuery(name = "TAuth.findByEmpNo", query = "SELECT t FROM TAuth t WHERE t.empNo = :empNo")
     , @NamedQuery(name = "TAuth.findByToken", query = "SELECT t FROM TAuth t WHERE t.token = :token")
-    , @NamedQuery(name = "TAuth.findByExpire", query = "SELECT t FROM TAuth t WHERE t.expire = :expire")})
+    , @NamedQuery(name = "TAuth.findByExpire", query = "SELECT t FROM TAuth t WHERE t.expire = :expire")
+    , @NamedQuery(name = "TAuth.findByEmpNoAndToken", query = "SELECT t FROM TAuth t WHERE t.empNo = :empNo and t.token = :token")})
 public class TAuth implements Serializable {
 
     private static final long serialVersionUID = 1L;

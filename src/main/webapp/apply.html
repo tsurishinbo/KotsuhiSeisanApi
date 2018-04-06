@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>交通費申請API呼出</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="./scripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript">
+        <!--
+            function doAction() {
+                // APIのURL
+                var url = "http://localhost:8080/KotsuhiSeisanApi/resources/application/apply";
+                
+                // リクエストパラメータ作成
+                var lines = [];
+                for (i = 1; i <= 3; i++) {
+                    if ($("#target_" + i).prop("checked") === true) {
+                        var line = {
+                            "used_date": $("#used_date_" + i).val(),
+                            "order_id": $("#order_id_" + i).val(),
+                            "place": $("#place_" + i).val(),
+                            "purpose": $("#purpose_" + i).val(),
+                            "means_id": $("#means_id_" + i).val(),
+                            "section_from": $("#section_from_" + i).val(),
+                            "section_to": $("#section_to_" + i).val(),
+                            "is_roundtrip": $("#is_roundtrip_" + i).val(),
+                            "fare": $("#fare_" + i).val(),
+                            "memo": $("#memo_" + i).val()
+                        };
+                        lines.push(line);
+                    }
+                }
+                var request = {
+                   emp_no: $("#emp_no").val(),
+                   token: $("#token").val(),
+                   list: lines
+                };
+                $("#request_param").val(JSON.stringify(request, null, "    "));
+                
+                // API呼出
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: JSON.stringify(request),
+                    contentType: 'application/json',
+                    dataType: 'JSON',
+                    scriptCharset: 'utf-8',
+                    success: function(data) {
+                        alert("success");
+                        $("#response_param").val(JSON.stringify(data, null, "    "));
+                    },
+                    error: function(data) {
+                        alert("error");
+                        $("#response_param").val(JSON.stringify(data, null, "    "));
+                    }
+                });
+            }
+        // -->
+        </script>
+    </head>
+    <body>
+        <h3>交通費申請API呼出</h3>
+        <hr>
+        <table>
+            <tr>
+                <td>社員番号</td>
+                <td><input type="text" id="emp_no" /></td>
+            </tr>    
+            <tr>
+                <td>トークン</td>
+                <td><input type="text" id="token" size="50"/></td>
+            </tr>    
+        </table>
+        <hr>
+        <table>
+            <tr>
+                <td>申請対象</td>
+                <td><input type="checkbox" id="target_1" value="1" /></td>
+            </tr>        
+            <tr>
+                <td>利用日</td>
+                <td><input type="text" id="used_date_1" /></td>
+            </tr>        
+            <tr>
+                <td>作業コード</td>
+                <td><input type="text" id="order_id_1" /></td>
+            </tr>        
+            <tr>
+                <td>出張場所</td>
+                <td><input type="text" id="place_1" /></td>
+            </tr>        
+            <tr>
+                <td>出張目的</td>
+                <td><input type="text" id="purpose_1" /></td>
+            </tr>        
+            <tr>
+                <td>交通手段コード</td>
+                <td><input type="text" id="means_id_1" /></td>
+            </tr>        
+            <tr>
+                <td>出発地</td>
+                <td><input type="text" id="section_from_1" /></td>
+            </tr>        
+            <tr>
+                <td>到着地</td>
+                <td><input type="text" id="section_to_1" /></td>
+            </tr>        
+            <tr>
+                <td>往復フラグ</td>
+                <td><input type="text" id="is_roundtrip_1" /></td>
+            </tr>        
+            <tr>
+                <td>料金</td>
+                <td><input type="text" id="fare_1" /></td>
+            </tr>        
+            <tr>
+                <td>備考</td>
+                <td><input type="text" id="memo_1" /></td>
+            </tr>        
+        </table>
+        <hr>
+        <table>
+            <tr>
+                <td>申請対象</td>
+                <td><input type="checkbox" id="target_2" value="1" /></td>
+            </tr>        
+            <tr>
+                <td>利用日</td>
+                <td><input type="text" id="used_date_2" /></td>
+            </tr>        
+            <tr>
+                <td>作業コード</td>
+                <td><input type="text" id="order_id_2" /></td>
+            </tr>        
+            <tr>
+                <td>出張場所</td>
+                <td><input type="text" id="place_2" /></td>
+            </tr>        
+            <tr>
+                <td>出張目的</td>
+                <td><input type="text" id="purpose_2" /></td>
+            </tr>        
+            <tr>
+                <td>交通手段コード</td>
+                <td><input type="text" id="means_id_2" /></td>
+            </tr>        
+            <tr>
+                <td>出発地</td>
+                <td><input type="text" id="section_from_2" /></td>
+            </tr>        
+            <tr>
+                <td>到着地</td>
+                <td><input type="text" id="section_to_2" /></td>
+            </tr>        
+            <tr>
+                <td>往復フラグ</td>
+                <td><input type="text" id="is_roundtrip_2" /></td>
+            </tr>        
+            <tr>
+                <td>料金</td>
+                <td><input type="text" id="fare_2" /></td>
+            </tr>        
+            <tr>
+                <td>備考</td>
+                <td><input type="text" id="memo_2" /></td>
+            </tr>        
+        </table>
+        <hr>
+        <table>
+            <tr>
+                <td>申請対象</td>
+                <td><input type="checkbox" id="target_3" value="1" /></td>
+            </tr>        
+            <tr>
+                <td>利用日</td>
+                <td><input type="text" id="used_date_3" /></td>
+            </tr>        
+            <tr>
+                <td>作業コード</td>
+                <td><input type="text" id="order_id_3" /></td>
+            </tr>        
+            <tr>
+                <td>出張場所</td>
+                <td><input type="text" id="place_3" /></td>
+            </tr>        
+            <tr>
+                <td>出張目的</td>
+                <td><input type="text" id="purpose_3" /></td>
+            </tr>        
+            <tr>
+                <td>交通手段コード</td>
+                <td><input type="text" id="means_id_3" /></td>
+            </tr>        
+            <tr>
+                <td>出発地</td>
+                <td><input type="text" id="section_from_3" /></td>
+            </tr>        
+            <tr>
+                <td>到着地</td>
+                <td><input type="text" id="section_to_3" /></td>
+            </tr>        
+            <tr>
+                <td>往復フラグ</td>
+                <td><input type="text" id="is_roundtrip_3" /></td>
+            </tr>        
+            <tr>
+                <td>料金</td>
+                <td><input type="text" id="fare_3" /></td>
+            </tr>        
+            <tr>
+                <td>備考</td>
+                <td><input type="text" id="memo_3" /></td>
+            </tr>        
+        </table>
+        <input type="button" value="API呼出" onclick="doAction()" />
+        <hr>
+        リクエストパラメータ<br>
+        <textarea id="request_param" rows="8" cols="50"></textarea><br>
+        レスポンスパラメータ<br>
+        <textarea id="response_param" rows="8" cols="50"></textarea><br>
+        <a href="index.html">戻る</a>
+    </body>
+</html>

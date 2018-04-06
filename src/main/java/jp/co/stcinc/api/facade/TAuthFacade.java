@@ -34,13 +34,32 @@ public class TAuthFacade extends AbstractFacade<TAuth> {
 
     /**
      * 認証情報を取得する
-     * @param empNo
-     * @return 
+     * @param empNo 社員番号
+     * @return 認証情報
      */
     public TAuth getAuthInfo(Integer empNo) {
         TAuth authInfo;
         Query query = em.createNamedQuery("TAuth.findByEmpNo");
         query.setParameter("empNo", empNo);
+        try {
+            authInfo = (TAuth)query.getSingleResult();
+        } catch (NoResultException e) {
+            authInfo = null;
+        }
+        return authInfo;
+    }
+
+    /**
+     * 認証情報を取得する
+     * @param empNo 社員番号
+     * @param token トークン
+     * @return 認証情報
+     */
+    public TAuth getAuthInfo(Integer empNo, String token) {
+        TAuth authInfo;
+        Query query = em.createNamedQuery("TAuth.findByEmpNoAndToken");
+        query.setParameter("empNo", empNo);
+        query.setParameter("token", token);
         try {
             authInfo = (TAuth)query.getSingleResult();
         } catch (NoResultException e) {

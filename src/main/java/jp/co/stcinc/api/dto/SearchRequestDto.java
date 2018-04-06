@@ -2,6 +2,7 @@ package jp.co.stcinc.api.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import jp.co.stcinc.api.util.Constants;
+import jp.co.stcinc.api.util.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
  * 交通費申請取得APIリクエスト用API
  */
 @XmlRootElement
-public class GetRequestDto {
+public class SearchRequestDto {
 
     // 社員番号
     @Getter @Setter
@@ -55,10 +56,10 @@ public class GetRequestDto {
         }
         // 申請日
         if (StringUtils.isNotEmpty(apply_date)) {
-            if (!StringUtils.isNumeric(apply_date)) {
+            if (StringUtils.length(apply_date) != 8) {
                 return false;
             }
-            if (StringUtils.length(apply_date) != 8) {
+            if (!DateUtils.checkDateFormat(apply_date, "yyyyMMddHHmmss")) {
                 return false;
             }
         }
