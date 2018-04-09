@@ -55,7 +55,7 @@ public class ApplyRequestDto {
             if (StringUtils.length(dto.getUsed_date()) != 8) {
                 return false;
             }
-            if (!DateUtils.checkDateFormat(dto.getUsed_date(), "yyyyMMddHHmmss")) {
+            if (!DateUtils.checkDateFormat(dto.getUsed_date(), "yyyyMMdd")) {
                 return false;
             }
             // 出張場所
@@ -91,8 +91,8 @@ public class ApplyRequestDto {
                 return false;
             }
             // 往復フラグ
-            if (!Constants.ROUNDTRIP_ON.equals(dto.getIs_roundtrip()) && 
-                !Constants.ROUNDTRIP_OFF.equals(dto.getIs_roundtrip())) {
+            if (!Constants.ROUNDTRIP_ON.toString().equals(dto.getIs_roundtrip()) && 
+                !Constants.ROUNDTRIP_OFF.toString().equals(dto.getIs_roundtrip())) {
                 return false;
             }
             // 料金

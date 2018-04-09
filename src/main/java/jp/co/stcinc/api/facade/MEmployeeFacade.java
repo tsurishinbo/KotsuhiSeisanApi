@@ -1,7 +1,5 @@
 package jp.co.stcinc.api.facade;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -53,4 +51,20 @@ public class MEmployeeFacade extends AbstractFacade<MEmployee> {
         return employee;
     }
     
+    /**
+     * 上司の社員番号を取得する
+     * @param id 社員番号
+     * @return 上司の社員番号
+     */
+    public Integer getBossId(Integer id) {
+        MEmployee employee;
+        Query query = em.createNamedQuery("MEmployee.findById");
+        query.setParameter("id", id);
+        try {
+            employee = (MEmployee)query.getSingleResult();
+            return employee.getBossId();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

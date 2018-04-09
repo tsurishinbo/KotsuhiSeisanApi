@@ -3,6 +3,7 @@ package jp.co.stcinc.api.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -53,4 +54,20 @@ public class DateUtils {
         }
     } 
     
+    /**
+     * 文字列を日付に変換する
+     * @param value 変換する文字列
+     * @param format 日付の書式
+     * @return 変換された日付
+     */
+    public static Date stringToDate(String value, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        try {
+            sdf.setLenient(false);
+            Date dt = sdf.parse(value);
+            return dt;
+        } catch (ParseException e) {
+            return null; 
+        }
+    }
 }

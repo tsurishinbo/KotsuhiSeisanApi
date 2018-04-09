@@ -5,13 +5,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import jp.co.stcinc.api.entity.MMeans;
+import jp.co.stcinc.api.entity.MOrder;
 
 /**
- * 交通手段マスタ操作
+ * 作業マスタ操作
  */
 @Stateless
-public class MMeansFacade extends AbstractFacade<MMeans> {
+public class MOrderFacade extends AbstractFacade<MOrder> {
 
     @PersistenceContext
     private EntityManager em;
@@ -19,8 +19,8 @@ public class MMeansFacade extends AbstractFacade<MMeans> {
     /**
      * コンストラクタ
      */
-    public MMeansFacade() {
-        super(MMeans.class);
+    public MOrderFacade() {
+        super(MOrder.class);
     }
 
     /**
@@ -33,20 +33,20 @@ public class MMeansFacade extends AbstractFacade<MMeans> {
     }
 
     /**
-     * 交通手段を取得する
-     * @param id 交通手段コード
-     * @return 交通手段エンティティ
+     * 作業を取得する
+     * @param id 作業コード
+     * @return 作業エンティティ
      */
-    public MMeans getMeans(Integer id) {
-        MMeans means;
-        Query query = em.createNamedQuery("MMeans.findById");
+    public MOrder getOrder(String id) {
+        MOrder order;
+        Query query = em.createNamedQuery("MOrder.findById");
         query.setParameter("id", id);
         try {
-            means = (MMeans)query.getSingleResult();
+            order = (MOrder)query.getSingleResult();
         } catch (NoResultException e) {
-            means = null;
+            order = null;
         }
-        return means;
+        return order;
     }
-    
+
 }
