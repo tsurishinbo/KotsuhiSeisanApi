@@ -6,14 +6,18 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 認証解除APIリクエスト用DTO
+ * 交通費申請削除APIリクエスト用DTO
  */
 @XmlRootElement
-public class ReleaseRequestDto extends BaseRequestDto {
+public class DeleteRequestDto extends BaseRequestDto {
 
     // トークン
     @Getter @Setter
     private String token;
+    
+    // 申請ID
+    @Getter @Setter
+    private String id;
 
     /**
      * パラメータチェック
@@ -31,6 +35,13 @@ public class ReleaseRequestDto extends BaseRequestDto {
         }
         // トークン
         if (StringUtils.isEmpty(token)) {
+            return false;
+        }
+        // 申請ID
+        if (StringUtils.isEmpty(id)) {
+            return false;
+        }
+        if (!StringUtils.isNumeric(id)) {
             return false;
         }
         

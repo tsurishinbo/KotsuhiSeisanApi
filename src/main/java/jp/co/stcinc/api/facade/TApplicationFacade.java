@@ -31,5 +31,22 @@ public class TApplicationFacade extends AbstractFacade<TApplication> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    
+    /**
+     * 申請を取得する
+     * @param id 申請ID
+     * @return 申請エンティティ
+     */
+    public TApplication getApplication(Integer id) {
+        TApplication application;
+        Query query = em.createNamedQuery("TApplication.findById");
+        query.setParameter("id", id);
+        try {
+            application = (TApplication)query.getSingleResult();
+        } catch (NoResultException e) {
+            application = null;
+        }
+        return application;
+    }
 
 }

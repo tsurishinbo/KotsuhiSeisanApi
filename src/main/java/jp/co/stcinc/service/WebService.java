@@ -12,7 +12,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import jp.co.stcinc.api.dto.ApplyDetailDto;
 import jp.co.stcinc.api.dto.ApplyRequestDto;
@@ -32,9 +34,12 @@ import jp.co.stcinc.api.facade.MMeansFacade;
 import jp.co.stcinc.api.facade.MOrderFacade;
 import jp.co.stcinc.api.facade.TApplicationFacade;
 import jp.co.stcinc.api.facade.TAuthFacade;
-import jp.co.stcinc.api.util.Constants;
-import jp.co.stcinc.api.util.DateUtils;
-import jp.co.stcinc.api.util.JsonUtils;
+import jp.co.stcinc.api.common.Constants;
+import jp.co.stcinc.api.common.DateUtils;
+import jp.co.stcinc.api.common.JsonUtils;
+import jp.co.stcinc.api.dto.BaseResponseDto;
+import jp.co.stcinc.api.dto.DeleteRequestDto;
+import jp.co.stcinc.api.dto.DeleteResponseDto;
 
 /**
  * REST Web Service
@@ -43,6 +48,10 @@ import jp.co.stcinc.api.util.JsonUtils;
 @Stateless
 public class WebService {
 
+    private static final int VALID_TOKEN = 0;   // トークンが有効
+    private static final int INVALID_TOKEN = 1; // トークンが不正
+    private static final int EXPIRED_TOKEN = 2; // トークンが有効期限切れ
+    
     @EJB
     private MEmployeeFacade mEmployeeFacade;
     @EJB
@@ -73,52 +82,64 @@ public class WebService {
         
         AuthResponseDto responseDto = new AuthResponseDto();
 
-        // リクエストパラメータのチェック
-        AuthRequestDto requestDto = JsonUtils.parseJson(AuthRequestDto.class, param);
-        if (requestDto == null || !requestDto.checkParam()) {
-            // 異常終了（パラメータ不正）
-            responseDto.SetErrorParam();
-            return JsonUtils.makeJson(responseDto);
-        }
-        // リクエストパラメータの取得
-        Integer empNo = Integer.parseInt(requestDto.getEmp_no()); // 社員番号
-        String password = requestDto.getPassword(); // パスワード
-        // 社員マスタのチェック
-        MEmployee employee = mEmployeeFacade.getEmployee(empNo, password);
-        if (employee == null) {
-            // 異常終了（認証失敗）
-            responseDto.SetErrorAuth();
-            return JsonUtils.makeJson(responseDto);
-        }
-        // 認証
-        String nowDate = DateUtils.getNowDate(); // 現在日時
-        String newExpire = DateUtils.getAddHourDate(1); // 現在日時+1時間
-        String newToken = makeToken(empNo.toString() + nowDate); // トークン
-        TAuth auth = tAuthFacade.getAuthInfo(empNo);
-        if (auth == null) {
-            // 認証情報作成
-            TAuth newAuth = new TAuth();
-            newAuth.setEmpNo(empNo);
-            newAuth.setToken(newToken);
-            newAuth.setExpire(newExpire);
-            tAuthFacade.create(newAuth);
-        } else {
-            // 認証情報更新
-            String token = auth.getToken();
-            String expire = auth.getExpire();
-            if ((token == null && expire == null) || (Long.parseLong(expire) < Long.parseLong(nowDate))) {
-                auth.setToken(newToken);
-                auth.setExpire(newExpire);
-                tAuthFacade.edit(auth);
-            } else {
-                // 異常終了（認証済）
-                responseDto.SetErrorAlready();
+        try {
+            // リクエストパラメータのチェック
+            AuthRequestDto requestDto = JsonUtils.parseJson(AuthRequestDto.class, param);
+            if (requestDto == null || !requestDto.checkParam()) {
+                // 異常終了（パラメータ不正）
+                responseDto.SetErrorParam();
                 return JsonUtils.makeJson(responseDto);
             }
+            
+            // リクエストパラメータの取得
+            Integer empNo = Integer.parseInt(requestDto.getEmp_no());   // 社員番号
+            String password = requestDto.getPassword();                 // パスワード
+            
+            // 社員マスタのチェック
+            MEmployee employee = mEmployeeFacade.getEmployee(empNo, password);
+            if (employee == null) {
+                // 異常終了（認証失敗）
+                responseDto.SetErrorAuth();
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // 認証
+            String nowDate = DateUtils.getNowDate();                // 現在日時
+            String newExpire = DateUtils.getAddHourDate(1);         // 現在日時+1時間
+            String newToken = makeToken(empNo.toString() + nowDate);// トークン
+            TAuth auth = tAuthFacade.getAuthInfo(empNo);
+            if (auth == null) {
+                // 認証情報作成
+                TAuth newAuth = new TAuth();
+                newAuth.setEmpNo(empNo);
+                newAuth.setToken(newToken);
+                newAuth.setExpire(newExpire);
+                tAuthFacade.create(newAuth);
+            } else {
+                // 認証情報更新
+                String token = auth.getToken();
+                String expire = auth.getExpire();
+                if ((token == null && expire == null) || (Long.parseLong(expire) < Long.parseLong(nowDate))) {
+                    auth.setToken(newToken);
+                    auth.setExpire(newExpire);
+                    tAuthFacade.edit(auth);
+                } else {
+                    // 異常終了（認証済）
+                    responseDto.SetErrorAlready();
+                    return JsonUtils.makeJson(responseDto);
+                }
+            }
+            
+            // 正常終了
+            responseDto.SetSuccessResult(newToken);
+            return JsonUtils.makeJson(responseDto);
+            
+        } catch (Exception e) {
+            // 異常終了（システム例外）
+            responseDto.SetErrorSystem();
+            return JsonUtils.makeJson(responseDto);
         }
-        // 正常終了
-        responseDto.SetSuccessResult(newToken);
-        return JsonUtils.makeJson(responseDto);
+        
     }
     
     /**
@@ -133,32 +154,46 @@ public class WebService {
     public String release(String param) {
 
         ReleaseResponseDto responseDto = new ReleaseResponseDto();
+
         
-        // リクエストパラメータのチェック
-        ReleaseRequestDto requestDto = JsonUtils.parseJson(ReleaseRequestDto.class, param);
-        if (requestDto == null || !requestDto.checkParam()) {
-            // 異常終了（パラメータ不正）
-            responseDto.SetErrorParam();
+        try {
+            // リクエストパラメータのチェック
+            ReleaseRequestDto requestDto = JsonUtils.parseJson(ReleaseRequestDto.class, param);
+            if (requestDto == null || !requestDto.checkParam()) {
+                // 異常終了（パラメータ不正）
+                responseDto.SetErrorParam();
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // リクエストパラメータの取得
+            Integer empNo = Integer.parseInt(requestDto.getEmp_no());   // 社員番号
+            String token = requestDto.getToken();                       // トークン
+            
+            // トークンのチェック
+            if (!checkToken(empNo, token, responseDto)) {
+                // 異常終了（トークン不正 または トークン有効期限切れ）
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // 認証解除
+            TAuth auth = tAuthFacade.getAuthInfo(empNo, token);
+            if (auth != null) {
+                // 認証情報を更新
+                auth.setToken(null);
+                auth.setExpire(null);
+                tAuthFacade.edit(auth);
+            }
+            
+            // 正常終了
+            responseDto.SetSuccessResult();
+            return JsonUtils.makeJson(responseDto);
+            
+        } catch (Exception e) {
+            // 異常終了（システム例外）
+            responseDto.SetErrorSystem();
             return JsonUtils.makeJson(responseDto);
         }
-        // リクエストパラメータの取得
-        Integer empNo = Integer.parseInt(requestDto.getEmp_no()); // 社員番号
-        String token = requestDto.getToken(); // トークン
-        // 認証解除
-        TAuth auth = tAuthFacade.getAuthInfo(empNo, token);
-        if (auth != null) {
-            // 認証情報を更新
-            auth.setToken(null);
-            auth.setExpire(null);
-            tAuthFacade.edit(auth);
-        } else {
-            // 異常終了（認証解除失敗）
-            responseDto.SetErrorRelease();
-            return JsonUtils.makeJson(responseDto);
-        }
-        // 正常終了
-        responseDto.SetSuccessResult();
-        return JsonUtils.makeJson(responseDto);
+        
     }
     
     /**
@@ -173,92 +208,150 @@ public class WebService {
     public String apply(String param) {
         
         ApplyResponseDto responseDto = new ApplyResponseDto();
-        
-        // リクエストパラメータのチェック
-        ApplyRequestDto requestDto = JsonUtils.parseJson(ApplyRequestDto.class, param);
-        if (requestDto == null || !requestDto.checkParam()) {
-            // 異常終了（パラメータ不正）
-            responseDto.SetErrorParam();
-            return JsonUtils.makeJson(responseDto);
-        }
-        // リクエストパラメータの取得
-        Integer empNo = Integer.parseInt(requestDto.getEmp_no()); // 社員番号
-        String token = requestDto.getToken(); // トークン
-        ArrayList<ApplyDetailDto> applyDetails = requestDto.getList(); // 申請内容
-        // 作業コード、交通手段コードのマスタチェック
-        for (ApplyDetailDto applyDetail : applyDetails) {
-            MOrder order = mOrderFacade.getOrder(applyDetail.getOrder_id());
-            MMeans means = mMeansFacade.getMeans(Integer.parseInt(applyDetail.getMeans_id()));
-            if (order == null || means == null) {
+
+        try {
+            // リクエストパラメータのチェック
+            ApplyRequestDto requestDto = JsonUtils.parseJson(ApplyRequestDto.class, param);
+            if (requestDto == null || !requestDto.checkParam()) {
                 // 異常終了（パラメータ不正）
                 responseDto.SetErrorParam();
                 return JsonUtils.makeJson(responseDto);
             }
-        }
-        // 認証チェック
-        if (!isAuthed(empNo, token)) {
-            // 異常終了（認証失敗）
-            responseDto.SetErrorAuth();
+            
+            // リクエストパラメータの取得
+            Integer empNo = Integer.parseInt(requestDto.getEmp_no());       // 社員番号
+            String token = requestDto.getToken();                           // トークン
+            ArrayList<ApplyDetailDto> applyDetails = requestDto.getList();  // 申請内容
+            
+            // 作業コード、交通手段コードのマスタチェック
+            for (ApplyDetailDto applyDetail : applyDetails) {
+                MOrder order = mOrderFacade.getOrder(applyDetail.getOrder_id());
+                MMeans means = mMeansFacade.getMeans(Integer.parseInt(applyDetail.getMeans_id()));
+                if (order == null || means == null) {
+                    // 異常終了（コード不正）
+                    responseDto.SetErrorCode();
+                    return JsonUtils.makeJson(responseDto);
+                }
+            }
+            
+            // トークンのチェック
+            if (!checkToken(empNo, token, responseDto)) {
+                // 異常終了（トークン不正 または トークン有効期限切れ）
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // 交通費申請
+            int sortNo = 1;
+            Long totalFare = 0L;
+            ArrayList<TLine> lines = new ArrayList<>();
+            for (ApplyDetailDto applyDetail : applyDetails) {
+                TLine line = new TLine();
+                line.setUsedDate(DateUtils.stringToDate(applyDetail.getUsed_date(), "yyyyMMdd"));   // 利用日
+                line.setOrderId(applyDetail.getOrder_id());                                         // 作業コード
+                line.setPlace(applyDetail.getPlace());                                              // 出張場所
+                line.setPurpose(applyDetail.getPurpose());                                          // 出張目的
+                line.setMeansId(Integer.parseInt(applyDetail.getMeans_id()));                       // 交通手段コード
+                line.setSectionFrom(applyDetail.getSection_from());                                 // 出発地
+                line.setSectionTo(applyDetail.getSection_to());                                     // 到着地
+                line.setIsRoundtrip(Integer.parseInt(applyDetail.getIs_roundtrip()));               // 往復フラグ
+                line.setFare(Long.parseLong(applyDetail.getFare()));                                // 料金
+                line.setMemo(applyDetail.getMemo());                                                // 備考
+                line.setSortNo(sortNo);                                                             // ソート番号
+                lines.add(line);
+                sortNo += 1;
+                totalFare += Long.parseLong(applyDetail.getFare());
+            }
+            TApplication application = new TApplication();
+            application.setStatus(Constants.STATUS_WAIT);                  // ステータス
+            application.setApplyId(empNo);                              // 申請者ID
+            application.setApplyDate(new Date());                       // 申請日
+            application.setApproveId(mEmployeeFacade.getBossId(empNo)); // 承認者ID
+            application.setTotalFare(totalFare);                        // 料金合計
+            application.setLines(lines);                                // 申請明細
+            tApplicationFacade.create(application);    
+            
+            // 正常終了
+            responseDto.SetSuccessResult();
+            return JsonUtils.makeJson(responseDto);            
+
+        } catch (Exception e) {
+            // 異常終了（システム例外）
+            responseDto.SetErrorSystem();
             return JsonUtils.makeJson(responseDto);
         }
-        // 交通費申請
-        int sortNo = 1;
-        Long totalFare = 0L;
-        ArrayList<TLine> lines = new ArrayList<>();
-        for (ApplyDetailDto applyDetail : applyDetails) {
-            TLine line = new TLine();
-            line.setUsedDate(DateUtils.stringToDate(applyDetail.getUsed_date(), "yyyyMMdd")); // 利用日
-            line.setOrderId(applyDetail.getOrder_id()); // 作業コード
-            line.setPlace(applyDetail.getPlace()); // 出張場所
-            line.setPurpose(applyDetail.getPurpose()); // 出張目的
-            line.setMeansId(Integer.parseInt(applyDetail.getMeans_id())); // 交通手段コード
-            line.setSectionFrom(applyDetail.getSection_from()); // 出発地
-            line.setSectionTo(applyDetail.getSection_to()); // 到着地
-            line.setIsRoundtrip(Integer.parseInt(applyDetail.getIs_roundtrip())); // 往復フラグ
-            line.setFare(Long.parseLong(applyDetail.getFare())); // 料金
-            line.setMemo(applyDetail.getMemo()); // 備考
-            line.setSortNo(sortNo); // ソート番号
-            lines.add(line);
-            sortNo += 1;
-            totalFare += Long.parseLong(applyDetail.getFare());
-        }
-        TApplication application = new TApplication();
-        application.setStatus(Constants.STS_WAIT); // ステータス
-        application.setApplyId(empNo); // 申請者ID
-        application.setApplyDate(new Date()); // 申請日
-        application.setApproveId(mEmployeeFacade.getBossId(empNo)); // 承認者ID
-        application.setTotalFare(totalFare); // 料金合計
-        application.setLines(lines); // 申請明細
-        tApplicationFacade.create(application);        
-        // 正常終了
-        responseDto.SetSuccessResult();
-        return JsonUtils.makeJson(responseDto);
+
     }
 
     /**
-     * 交通費申請取消 (DELETE)
+     * 交通費申請削除 (PUT)
      * @param param リクエストパラメータ
      * @return レスポンスパラメータ
      */
-    @DELETE
-    @Path("cencel")
+    @PUT
+    @Path("delete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String cancel(String param) {
         
-        return null;
+        DeleteResponseDto responseDto = new DeleteResponseDto();
+        
+        try {
+            // リクエストパラメータのチェック
+            DeleteRequestDto requestDto = JsonUtils.parseJson(DeleteRequestDto.class, param);
+            if (requestDto == null || !requestDto.checkParam()) {
+                // 異常終了（パラメータ不正）
+                responseDto.SetErrorParam();
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // リクエストパラメータの取得
+            Integer empNo = Integer.parseInt(requestDto.getEmp_no());   // 社員番号
+            String token = requestDto.getToken();                       // トークン
+            Integer id = Integer.parseInt(requestDto.getId());          // 申請ID
+            
+            // トークンのチェック
+            if (!checkToken(empNo, token, responseDto)) {
+                // 異常終了（トークン不正 または トークン有効期限切れ）
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // 交通費申請取消（削除）
+            TApplication application = tApplicationFacade.getApplication(id);
+            if (application == null) {
+                // 異常終了（該当申請なし）
+                responseDto.SetErrorNotfound();
+                return JsonUtils.makeJson(responseDto);
+            }
+            if (application.getStatus() != Constants.STATUS_SAVE &&
+                application.getStatus() != Constants.STATUS_WAIT) {
+                // 異常終了（申請取消不可）
+                responseDto.SetErrorCancel();
+                return JsonUtils.makeJson(responseDto);
+            }
+            tApplicationFacade.remove(application);
+
+            // 正常終了
+            responseDto.SetSuccessResult();
+            return JsonUtils.makeJson(responseDto);            
+            
+        } catch (Exception e) {
+            // 異常終了（システム例外）
+            responseDto.SetErrorSystem();
+            return JsonUtils.makeJson(responseDto);
+        }
+
     }
     
     /**
-     * 交通費申請検索 (GET)
+     * 交通費申請取得 (PUT)
      * @param param リクエストパラメータ
      * @return レスポンスパラメータ
      */
-    @GET
-    @Path("search")
+    @PUT
+    @Path("get")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String search(String param) {
+    public String get(String param) {
         
         return null;
     }
@@ -283,26 +376,30 @@ public class WebService {
     }
     
     /**
-     * 認証されているかどうかを返す
+     * トークンのチェックを行う
      * @param empNo 社員番号
      * @param token トークン
-     * @return 認証状態
+     * @param response レスポンス ※エラーの場合に異常終了レスポンスを設定
+     * @return チェック結果 
      */
-    private boolean isAuthed(Integer empNo, String token) {
+    private boolean checkToken(Integer empNo, String token, BaseResponseDto response) {
         TAuth auth = tAuthFacade.getAuthInfo(empNo, token);
-        // 認証情報なし
+        // トークンの存在をチェック
         if (auth == null) {
+            // トークンが不正
+            response.SetErrorToken();
             return false;
         }
-        // システム日付を取得
+        // トークンの有効期限をチェック
         String nowDate = DateUtils.getNowDate();
-        // 有効期限を取得 
         String expire = auth.getExpire();
-        // 有効期限切れ
         if (expire == null || (Long.parseLong(expire) < Long.parseLong(nowDate))) {
+            // トークンが有効期限切れ
+            response.SetErrorExpire();
             return false;
         }
+        // トークンが有効
         return true;
     }
-    
+
 }

@@ -9,11 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  * 認証APIリクエスト用DTO
  */
 @XmlRootElement
-public class AuthRequestDto {
-
-    // 社員番号
-    @Getter @Setter
-    protected String emp_no;
+public class AuthRequestDto extends BaseRequestDto {
 
     // パスワード
     @Getter @Setter
@@ -23,6 +19,7 @@ public class AuthRequestDto {
      * パラメータチェック
      * @return チェック結果
      */
+    @Override
     public boolean checkParam() {
         
         // 社員番号

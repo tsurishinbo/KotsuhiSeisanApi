@@ -2,8 +2,8 @@ package jp.co.stcinc.api.dto;
 
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
-import jp.co.stcinc.api.util.Constants;
-import jp.co.stcinc.api.util.DateUtils;
+import jp.co.stcinc.api.common.Constants;
+import jp.co.stcinc.api.common.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -12,11 +12,7 @@ import org.apache.commons.lang3.StringUtils;
  * 交通費申請APIリクエスト用DTO
  */
 @XmlRootElement
-public class ApplyRequestDto {
-    
-    // 社員番号
-    @Getter @Setter
-    private String emp_no;
+public class ApplyRequestDto extends BaseRequestDto {
     
     // トークン
     @Getter @Setter
@@ -30,6 +26,7 @@ public class ApplyRequestDto {
      * パラメータチェック
      * @return チェック結果
      */
+    @Override
     public boolean checkParam() {
         
         // 社員番号

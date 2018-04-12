@@ -1,4 +1,4 @@
-package jp.co.stcinc.api.util;
+package jp.co.stcinc.api.common;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

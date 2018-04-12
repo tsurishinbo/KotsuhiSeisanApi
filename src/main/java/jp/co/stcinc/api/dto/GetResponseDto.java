@@ -9,21 +9,10 @@ import lombok.Setter;
  * 交通費申請取得APIレスポンス用DTO
  */
 @XmlRootElement
-public class SearchResponseDto {
-
-    // 処理結果
-    @Getter @Setter
-    private Integer result;
-    
-    // エラーコード
-    @Getter @Setter
-    private String err_code;
-    
-    // エラーメッセージ
-    @Getter @Setter
-    private String err_message;
+public class GetResponseDto extends BaseResponseDto {
 
     // 交通費申請リスト
     @Getter @Setter
     private ArrayList<ApplyDto> list;
+
 }

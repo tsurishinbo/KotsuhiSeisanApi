@@ -1,20 +1,18 @@
 package jp.co.stcinc.api.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import jp.co.stcinc.api.common.Constants;
+import jp.co.stcinc.api.common.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 交通費申請取消APIリクエスト用DTO
+ * 交通費申請取得APIリクエスト用API
  */
 @XmlRootElement
-public class CancelRequestDto {
+public class GetRequestDto extends BaseRequestDto {
 
-    // 社員番号
-    @Getter @Setter
-    private String emp_no;
-    
     // トークン
     @Getter @Setter
     private String token;
@@ -27,6 +25,7 @@ public class CancelRequestDto {
      * パラメータチェック
      * @return チェック結果
      */
+    @Override
     public boolean checkParam() {
         
         // 社員番号
