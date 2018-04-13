@@ -19,5 +19,5 @@ public abstract class BaseRequestDto {
      * @return チェック結果
      */
     public abstract boolean checkParam();
-
+    
 }

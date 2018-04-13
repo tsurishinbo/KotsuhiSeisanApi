@@ -11,8 +11,35 @@ import lombok.Setter;
 @XmlRootElement
 public class GetResponseDto extends BaseResponseDto {
 
-    // 交通費申請リスト
     @Getter @Setter
-    private ArrayList<ApplyDto> list;
+    private Integer id;
+    
+    @Getter @Setter
+    private Integer status;
+    
+    @Getter @Setter
+    private Integer apply_id;
+    
+    @Getter @Setter
+    private String apply_name;
+    
+    @Getter @Setter
+    private String apply_date;
+    
+    @Getter @Setter
+    private Integer approve_id;
+    
+    @Getter @Setter
+    private String approve_name;
+    
+    @Getter @Setter
+    private String approve_date;
+    
+    @Getter @Setter
+    private Long total_fare;
+
+    // 交通費申請明細リスト
+    @Getter @Setter
+    private ArrayList<ApplyDetailResponseDto> list;
 
 }

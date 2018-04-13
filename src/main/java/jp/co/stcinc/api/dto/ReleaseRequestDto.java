@@ -33,7 +33,7 @@ public class ReleaseRequestDto extends BaseRequestDto {
         if (StringUtils.isEmpty(token)) {
             return false;
         }
-        
         return true;
     }
+
 }

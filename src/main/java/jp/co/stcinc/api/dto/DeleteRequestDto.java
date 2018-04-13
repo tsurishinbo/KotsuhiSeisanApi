@@ -44,7 +44,7 @@ public class DeleteRequestDto extends BaseRequestDto {
         if (!StringUtils.isNumeric(id)) {
             return false;
         }
-        
         return true;
     }
+
 }

@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 交通費申請明細DTO
+ * レスポンス用申請明細DTO
  */
 @XmlRootElement
-public class ApplyDetailDto {
+public class ApplyDetailResponseDto {
 
     // 利用日
     @Getter @Setter
@@ -16,8 +16,12 @@ public class ApplyDetailDto {
 
     // 作業コード
     @Getter @Setter
-    private String order_id;
+    private Integer order_id;
 
+    // 作業名
+    @Getter @Setter
+    private String order_name;
+    
     // 出張場所
     @Getter @Setter
     private String place;
@@ -28,8 +32,12 @@ public class ApplyDetailDto {
 
     // 交通手段コード
     @Getter @Setter
-    private String means_id;
+    private Integer means_id;
 
+    // 交通手段名
+    @Getter @Setter
+    private String means_name;
+    
     // 出発地
     @Getter @Setter
     private String section_from;
@@ -40,13 +48,14 @@ public class ApplyDetailDto {
 
     // 往復フラグ
     @Getter @Setter
-    private String is_roundtrip;
+    private Integer is_roundtrip;
 
     // 料金
     @Getter @Setter
-    private String fare;
+    private Long fare;
 
     // 備考
     @Getter @Setter
     private String memo;
+    
 }

@@ -46,7 +46,7 @@ public class GetRequestDto extends BaseRequestDto {
         if (!StringUtils.isNumeric(id)) {
             return false;
         }
-        
         return true;
     }
+
 }

@@ -7,16 +7,12 @@ import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import jp.co.stcinc.api.dto.ApplyDetailDto;
+import jp.co.stcinc.api.dto.ApplyDetailRequestDto;
 import jp.co.stcinc.api.dto.ApplyRequestDto;
 import jp.co.stcinc.api.dto.ApplyResponseDto;
 import jp.co.stcinc.api.dto.AuthRequestDto;
@@ -37,9 +33,11 @@ import jp.co.stcinc.api.facade.TAuthFacade;
 import jp.co.stcinc.api.common.Constants;
 import jp.co.stcinc.api.common.DateUtils;
 import jp.co.stcinc.api.common.JsonUtils;
+import jp.co.stcinc.api.dto.ApplyDetailResponseDto;
 import jp.co.stcinc.api.dto.BaseResponseDto;
 import jp.co.stcinc.api.dto.DeleteRequestDto;
 import jp.co.stcinc.api.dto.DeleteResponseDto;
+import jp.co.stcinc.api.dto.GetResponseDto;
 
 /**
  * REST Web Service
@@ -154,7 +152,6 @@ public class WebService {
     public String release(String param) {
 
         ReleaseResponseDto responseDto = new ReleaseResponseDto();
-
         
         try {
             // リクエストパラメータのチェック
@@ -221,10 +218,10 @@ public class WebService {
             // リクエストパラメータの取得
             Integer empNo = Integer.parseInt(requestDto.getEmp_no());       // 社員番号
             String token = requestDto.getToken();                           // トークン
-            ArrayList<ApplyDetailDto> applyDetails = requestDto.getList();  // 申請内容
+            ArrayList<ApplyDetailRequestDto> applyDetails = requestDto.getList();  // 申請内容
             
             // 作業コード、交通手段コードのマスタチェック
-            for (ApplyDetailDto applyDetail : applyDetails) {
+            for (ApplyDetailRequestDto applyDetail : applyDetails) {
                 MOrder order = mOrderFacade.getOrder(applyDetail.getOrder_id());
                 MMeans means = mMeansFacade.getMeans(Integer.parseInt(applyDetail.getMeans_id()));
                 if (order == null || means == null) {
@@ -244,7 +241,7 @@ public class WebService {
             int sortNo = 1;
             Long totalFare = 0L;
             ArrayList<TLine> lines = new ArrayList<>();
-            for (ApplyDetailDto applyDetail : applyDetails) {
+            for (ApplyDetailRequestDto applyDetail : applyDetails) {
                 TLine line = new TLine();
                 line.setUsedDate(DateUtils.stringToDate(applyDetail.getUsed_date(), "yyyyMMdd"));   // 利用日
                 line.setOrderId(applyDetail.getOrder_id());                                         // 作業コード
@@ -353,7 +350,62 @@ public class WebService {
     @Produces(MediaType.APPLICATION_JSON)
     public String get(String param) {
         
-        return null;
+        GetResponseDto responseDto = new GetResponseDto();
+        
+        try {
+            // リクエストパラメータのチェック
+            DeleteRequestDto requestDto = JsonUtils.parseJson(DeleteRequestDto.class, param);
+            if (requestDto == null || !requestDto.checkParam()) {
+                // 異常終了（パラメータ不正）
+                responseDto.SetErrorParam();
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // リクエストパラメータの取得
+            Integer empNo = Integer.parseInt(requestDto.getEmp_no());   // 社員番号
+            String token = requestDto.getToken();                       // トークン
+            Integer id = Integer.parseInt(requestDto.getId());          // 申請ID
+            
+            // トークンのチェック
+            if (!checkToken(empNo, token, responseDto)) {
+                // 異常終了（トークン不正 または トークン有効期限切れ）
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // 交通費申請取得
+            TApplication application = tApplicationFacade.getApplication(id);
+            if (application == null) {
+                // 異常終了（該当申請なし）
+                responseDto.SetErrorNotfound();
+                return JsonUtils.makeJson(responseDto);
+            }
+            
+            // レスポンスに取得内容を設定
+            // *申請
+            
+            
+            // *申請明細
+            ArrayList<ApplyDetailResponseDto> details = new ArrayList<>();
+            for (TLine line : application.getLines()) {
+                ApplyDetailResponseDto detail = new ApplyDetailResponseDto();
+                detail.setUsed_date(line.getUsedDate().toString());
+                
+                
+                
+                
+                details.add(detail);
+            }
+            responseDto.setList(details);
+            
+            // 正常終了
+            responseDto.SetSuccessResult();
+            return JsonUtils.makeJson(responseDto);            
+            
+        } catch (Exception e) {
+            // 異常終了（システム例外）
+            responseDto.SetErrorSystem();
+            return JsonUtils.makeJson(responseDto);
+        }
     }
     
     /**

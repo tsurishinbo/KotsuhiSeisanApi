@@ -33,7 +33,7 @@ public class AuthRequestDto extends BaseRequestDto {
         if (StringUtils.isEmpty(password)) {
             return false;
         }
-
         return true;
     }
+    
 }

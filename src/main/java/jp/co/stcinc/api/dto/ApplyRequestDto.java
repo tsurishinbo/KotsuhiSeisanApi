@@ -20,7 +20,7 @@ public class ApplyRequestDto extends BaseRequestDto {
     
     // 交通費申請明細リスト
     @Getter @Setter
-    private ArrayList<ApplyDetailDto> list;
+    private ArrayList<ApplyDetailRequestDto> list;
 
     /**
      * パラメータチェック
@@ -44,7 +44,7 @@ public class ApplyRequestDto extends BaseRequestDto {
         if (list.size() == 0) {
             return false;
         }
-        for (ApplyDetailDto dto : list) {
+        for (ApplyDetailRequestDto dto : list) {
             // 利用日
             if (StringUtils.isEmpty(dto.getUsed_date())) {
                 return false;
@@ -100,8 +100,7 @@ public class ApplyRequestDto extends BaseRequestDto {
                 return false;
             }
         }
-
-        
         return true;
     }
+    
 }
