@@ -16,7 +16,7 @@ public class ApplyDetailResponseDto {
 
     // 作業コード
     @Getter @Setter
-    private Integer order_id;
+    private String order_id;
 
     // 作業名
     @Getter @Setter

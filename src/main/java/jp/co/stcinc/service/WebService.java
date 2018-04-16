@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -382,17 +384,35 @@ public class WebService {
             
             // レスポンスに取得内容を設定
             // *申請
-            
-            
+            responseDto.setId(application.getId());
+            responseDto.setStatus(application.getStatus());
+            responseDto.setApply_id(application.getApplyId());
+            responseDto.setApply_name(application.getApplyEmployee().getEmployeeName());
+            responseDto.setApply_date(DateUtils.dateToString(application.getApplyDate(),"yyyyMMdd"));
+            responseDto.setApprove_id(application.getApproveId());
+            if (application.getApproveId() != null) {
+                responseDto.setApprove_name(application.getApproveEmployee().getEmployeeName());
+            }
+            responseDto.setApprove_date(DateUtils.dateToString(application.getApproveDate(),"yyyyMMdd"));
+            responseDto.setTotal_fare(application.getTotalFare());
             // *申請明細
             ArrayList<ApplyDetailResponseDto> details = new ArrayList<>();
             for (TLine line : application.getLines()) {
                 ApplyDetailResponseDto detail = new ApplyDetailResponseDto();
-                detail.setUsed_date(line.getUsedDate().toString());
-                
-                
-                
-                
+                detail.setUsed_date(DateUtils.dateToString(line.getUsedDate(),"yyyyMMdd"));
+                detail.setOrder_id(line.getOrderId());
+                if (line.getOrderId() != null) {
+                    detail.setOrder_name(line.getOrder().getOrderName());
+                }
+                detail.setPlace(line.getPlace());
+                detail.setPurpose(line.getPurpose());
+                detail.setMeans_id(line.getMeansId());
+                detail.setMeans_name(line.getMeans().getMeans());
+                detail.setSection_from(line.getSectionFrom());
+                detail.setSection_to(line.getSectionTo());
+                detail.setIs_roundtrip(line.getIsRoundtrip());
+                detail.setFare(line.getFare());
+                detail.setMemo(line.getMemo());
                 details.add(detail);
             }
             responseDto.setList(details);

@@ -55,12 +55,15 @@ public class DateUtils {
     } 
     
     /**
-     * 文字列を日付に変換する
+     * 文字列型を日付型に変換する
      * @param value 変換する文字列
      * @param format 日付の書式
      * @return 変換された日付
      */
     public static Date stringToDate(String value, String format) {
+        if (value == null) {
+            return null;
+        }
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         try {
             sdf.setLenient(false);
@@ -69,5 +72,19 @@ public class DateUtils {
         } catch (ParseException e) {
             return null; 
         }
+    }
+    
+    /**
+     * 日付型を文字列型に変換する
+     * @param value 変換する日付
+     * @param format 日付の書式
+     * @return 変換された文字列
+     */
+    public static String dateToString(Date value, String format) {
+        if (value == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(value);
     }
 }
