@@ -11,6 +11,4 @@
         <property name="driverClass" value="org.postgresql.Driver"/>
     </jdbc-connection-pool>
     <jdbc-resource enabled="true" jndi-name="java:app/jdbc/transdb" object-type="user" pool-name="post-gre-sql_transdb_transdb_userPool"/>
-    <jdbc-resource enabled="true" jndi-name="java:app/111" object-type="user" pool-name="post-gre-sql_transdb_transdb_userPool"/>
-    <jdbc-resource enabled="true" jndi-name="java:app/jdbc/transdb" object-type="user" pool-name="post-gre-sql_transdb_transdb_userPool"/>
 </resources>
