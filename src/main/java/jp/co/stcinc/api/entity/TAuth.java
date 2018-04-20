@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jp.co.stcinc.api.entity;
 
 import java.io.Serializable;
@@ -16,7 +21,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 認証情報エンティティ
+ *
+ * @author kageyamay
  */
 @Entity
 @Table(name = "t_auth")
@@ -25,8 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TAuth.findAll", query = "SELECT t FROM TAuth t")
     , @NamedQuery(name = "TAuth.findByEmpNo", query = "SELECT t FROM TAuth t WHERE t.empNo = :empNo")
     , @NamedQuery(name = "TAuth.findByToken", query = "SELECT t FROM TAuth t WHERE t.token = :token")
-    , @NamedQuery(name = "TAuth.findByExpire", query = "SELECT t FROM TAuth t WHERE t.expire = :expire")
-    , @NamedQuery(name = "TAuth.findByEmpNoAndToken", query = "SELECT t FROM TAuth t WHERE t.empNo = :empNo and t.token = :token")})
+    , @NamedQuery(name = "TAuth.findByIssued", query = "SELECT t FROM TAuth t WHERE t.issued = :issued")})
 public class TAuth implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,18 +40,28 @@ public class TAuth implements Serializable {
     @NotNull
     @Column(name = "emp_no")
     private Integer empNo;
-    @Size(max = 100)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "token")
     private String token;
-    @Size(max = 14)
-    @Column(name = "expire")
-    private String expire;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "issued")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date issued;
 
     public TAuth() {
     }
 
     public TAuth(Integer empNo) {
         this.empNo = empNo;
+    }
+
+    public TAuth(Integer empNo, String token, Date issued) {
+        this.empNo = empNo;
+        this.token = token;
+        this.issued = issued;
     }
 
     public Integer getEmpNo() {
@@ -65,12 +80,12 @@ public class TAuth implements Serializable {
         this.token = token;
     }
 
-    public String getExpire() {
-        return expire;
+    public Date getIssued() {
+        return issued;
     }
 
-    public void setExpire(String expire) {
-        this.expire = expire;
+    public void setIssued(Date issued) {
+        this.issued = issued;
     }
 
     @Override

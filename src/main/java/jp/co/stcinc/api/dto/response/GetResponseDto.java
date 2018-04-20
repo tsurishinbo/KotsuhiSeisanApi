@@ -1,4 +1,4 @@
-package jp.co.stcinc.api.dto;
+package jp.co.stcinc.api.dto.response;
 
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,7 +9,7 @@ import lombok.Setter;
  * 交通費申請取得APIレスポンス用DTO
  */
 @XmlRootElement
-public class GetResponseDto extends BaseResponseDto {
+public class GetResponseDto extends AbstractResponseDto {
 
     @Getter @Setter
     private Integer id;
@@ -38,7 +38,7 @@ public class GetResponseDto extends BaseResponseDto {
     @Getter @Setter
     private Long total_fare;
 
-    // 交通費申請明細リスト
+    // 申請明細リスト
     @Getter @Setter
     private ArrayList<ApplyDetailResponseDto> list;
 

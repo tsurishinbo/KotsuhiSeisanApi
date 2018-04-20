@@ -28,27 +28,25 @@ public final class Constants {
     /**
      * エラーコード
      */
-    public static final String ERR_COD_SYSTEM   = "E001"; // システム例外
-    public static final String ERR_COD_PARAM    = "E002"; // パラメータ不正
-    public static final String ERR_COD_TOKEN    = "E003"; // トークン不正
-    public static final String ERR_COD_EXPIRE   = "E004"; // トークン有効期限切れ
-    public static final String ERR_COD_AUTH     = "E005"; // 認証失敗
-    public static final String ERR_COD_ALREADY  = "E006"; // 認証済
-    public static final String ERR_COD_CODE     = "E007"; // コード不正
-    public static final String ERR_COD_NOTFOUND = "E008"; // 申請なし
-    public static final String ERR_COD_DELETE   = "E009"; // 申請削除不可
+    public static final String ERRCOD_SYSTEM_FAILED        = "E001"; // システム例外
+    public static final String ERRCOD_INVALID_TOKEN        = "E002"; // トークン不正
+    public static final String ERRCOD_INVALID_PARAM        = "E003"; // パラメータ不正
+    public static final String ERRCOD_AUTH_FAILED          = "E004"; // 認証失敗
+    public static final String ERRCOD_ALREADY_ISSUED       = "E005"; // トークン発行済
+    public static final String ERRCOD_INVALID_CODE         = "E006"; // コード不正
+    public static final String ERRCOD_NOTFOUND_APPLICATION = "E007"; // 申請なし
+    public static final String ERRCOD_CANNOT_DELETE        = "E008"; // 削除不可ステータス
     
     /**
      * エラーメッセージ
      */
-    public static final String ERR_MSG_SYSTEM    = "System failed";         // システム例外
-    public static final String ERR_MSG_PARAM     = "Invalid parameter";     // パラメータ不正
-    public static final String ERR_MSG_TOKEN     = "Invalid token";         // トークン不正
-    public static final String ERR_MSG_EXPIRE    = "Expired token";         // トークン有効期限切れ
-    public static final String ERR_MSG_AUTH      = "Authentication failed"; // 認証失敗
-    public static final String ERR_MSG_ALREADY   = "Already authenticated"; // 認証済
-    public static final String ERR_MSG_CODE      = "Invalid code";          // コード不正
-    public static final String ERR_MSG_NOTFOUND  = "Not found application"; // 申請なし
-    public static final String ERR_MSG_DELETE    = "Can not delete";        // 申請削除不可
+    public static final String ERRMSG_SYSTEM_FAILED        = "System failed";         // システム例外
+    public static final String ERRMSG_INVALID_TOKEN        = "Invalid token";         // トークン不正
+    public static final String ERRMSG_INVALID_PARAM        = "Invalid parameter";     // パラメータ不正
+    public static final String ERRMSG_AUTH_FAILED          = "Authentication failed"; // 認証失敗
+    public static final String ERRMSG_ALREADY_ISSUED       = "Already issued";        // トークン発行済
+    public static final String ERRMSG_INVALID_CODE         = "Invalid code";          // コード不正
+    public static final String ERRMSG_NOTFOUND_APPLICATION = "Not found application"; // 申請なし
+    public static final String ERRMSG_CANNOT_DELETE        = "Can't delete status";   // 削除不可ステータス
 
 }

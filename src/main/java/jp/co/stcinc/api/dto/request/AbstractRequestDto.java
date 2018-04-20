@@ -1,4 +1,4 @@
-package jp.co.stcinc.api.dto;
+package jp.co.stcinc.api.dto.request;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
@@ -8,11 +8,7 @@ import lombok.Setter;
  * リクエスト用DTO基底クラス
  */
 @XmlRootElement
-public abstract class BaseRequestDto {
-
-    // 社員番号
-    @Getter @Setter
-    protected String emp_no;
+public abstract class AbstractRequestDto {
 
     /**
      * パラメータチェック

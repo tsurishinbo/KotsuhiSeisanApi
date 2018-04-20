@@ -7,25 +7,14 @@
         <script type="text/javascript">
         <!--
             function doAction() {
-                // APIのURL
-                var url = "http://localhost:8080/KotsuhiSeisanApi/resources/application/get";
-                
-                // リクエストパラメータ作成
-                var request = {
-                   emp_no: $("#emp_no").val(),
-                   token: $("#token").val(),
-                   id: $("#app_id").val()
-                };
-                $("#request_param").val(JSON.stringify(request, null, "    "));
-                
                 // API呼出
                 $.ajax({
-                    type: 'PUT',
-                    url: url,
-                    data: JSON.stringify(request),
-                    contentType: 'application/json',
-                    dataType: 'JSON',
-                    scriptCharset: 'utf-8',
+                    type: 'GET',
+                    url: 'http://localhost:8080/KotsuhiSeisanApi/resources/application/get/' + $("#app_id").val(),
+                    data: null,
+                    headers: {
+                        Authorization: 'Bearer ' + $("#token").val()
+                    },
                     success: function(data) {
                         alert("success");
                         $("#response_param").val(JSON.stringify(data, null, "    "));
@@ -44,23 +33,19 @@
         <hr>
         <table>
             <tr>
-                <td>社員番号</td>
-                <td><input type="text" id="emp_no" /></td>
-            </tr>
-            <tr>
                 <td>トークン</td>
                 <td><input type="text" id="token" size="50"/></td>
             </tr>    
             <tr>
                 <td>申請番号</td>
-                <td><input type="text" id="app_id" size="50"/></td>
+                <td><input type="text" id="app_id" size="10"/></td>
             </tr>    
         </table>
         <input type="button" value="API呼出" onclick="doAction()" />
         <hr>
-        リクエストパラメータ<br>
+        リクエストパラメータ(JSON)<br>
         <textarea id="request_param" rows="8" cols="50"></textarea><br>
-        レスポンスパラメータ<br>
+        レスポンスパラメータ(JSON)<br>
         <textarea id="response_param" rows="8" cols="50"></textarea><br>
         <a href="index.html">戻る</a>
     </body>

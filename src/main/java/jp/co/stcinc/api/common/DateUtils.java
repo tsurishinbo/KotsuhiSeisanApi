@@ -13,26 +13,24 @@ public class DateUtils {
     
     /**
      * 現在日時を取得する
-     * @return 現在日次(yyyyMMddHHmmss)
+     * @return 現在日時
      */
-    public static String getNowDate() {
+    public static Date getNowDate() {
         TimeZone tz = TimeZone.getTimeZone("Asia/Tokyo");
         Calendar c = Calendar.getInstance(tz);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         
-        return sdf.format(c.getTime());
+        return c.getTime();
     }
-    
+
     /**
-     * 指定時間後の日時を取得する
-     * @param hour 加算する時間
-     * @return 指定時間後の日時(yyyyMMddHHmmss)
+     * 現在日時の文字列を取得する
+     * @param format 日付の書式
+     * @return 現在日時
      */
-    public static String getAddHourDate(int hour) {
+    public static String getNowDateString(String format) {
         TimeZone tz = TimeZone.getTimeZone("Asia/Tokyo");
         Calendar c = Calendar.getInstance(tz);
-        c.add(Calendar.HOUR, hour);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         
         return sdf.format(c.getTime());
     }

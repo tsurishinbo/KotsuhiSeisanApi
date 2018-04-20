@@ -1,30 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>認証解除API呼出</title>
+        <title>トークン解除API呼出</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="./scripts/jquery-1.10.2.min.js"></script>
         <script type="text/javascript">
         <!--
             function doAction() {
-                // APIのURL
-                var url = "http://localhost:8080/KotsuhiSeisanApi/resources/application/release";
-                
-                // リクエストパラメータ作成
-                var request = {
-                   emp_no: $("#emp_no").val(),
-                   token: $("#token").val()
-                };
-                $("#request_param").val(JSON.stringify(request, null, "    "));
-                
                 // API呼出
                 $.ajax({
-                    type: 'PUT',
-                    url: url,
-                    data: JSON.stringify(request),
-                    contentType: 'application/json',
-                    dataType: 'JSON',
-                    scriptCharset: 'utf-8',
+                    type: 'DELETE',
+                    url: 'http://localhost:8080/KotsuhiSeisanApi/resources/application/release',
+                    data: null,
+                    headers: {
+                        Authorization: 'Bearer ' + $("#token").val()
+                    },
                     success: function(data) {
                         alert("success");
                         $("#response_param").val(JSON.stringify(data, null, "    "));
@@ -39,13 +29,9 @@
         </script>
     </head>
     <body>
-        <h3>認証解除API呼出</h3>
+        <h3>トークン解除API呼出</h3>
         <hr>
         <table>
-            <tr>
-                <td>社員番号</td>
-                <td><input type="text" id="emp_no" /></td>
-            </tr>
             <tr>
                 <td>トークン</td>
                 <td><input type="text" id="token" size="50"/></td>
@@ -53,9 +39,9 @@
         </table>
         <input type="button" value="API呼出" onclick="doAction()" />
         <hr>
-        リクエストパラメータ<br>
+        リクエストパラメータ(JSON)<br>
         <textarea id="request_param" rows="8" cols="50"></textarea><br>
-        レスポンスパラメータ<br>
+        レスポンスパラメータ(JSON)<br>
         <textarea id="response_param" rows="8" cols="50"></textarea><br>
         <a href="index.html">戻る</a>
     </body>

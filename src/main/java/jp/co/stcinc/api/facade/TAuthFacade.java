@@ -51,14 +51,12 @@ public class TAuthFacade extends AbstractFacade<TAuth> {
 
     /**
      * 認証情報を取得する
-     * @param empNo 社員番号
      * @param token トークン
      * @return 認証情報
      */
-    public TAuth getAuthInfo(Integer empNo, String token) {
+    public TAuth getAuthInfoByToken(String token) {
         TAuth authInfo;
-        Query query = em.createNamedQuery("TAuth.findByEmpNoAndToken");
-        query.setParameter("empNo", empNo);
+        Query query = em.createNamedQuery("TAuth.findByToken");
         query.setParameter("token", token);
         try {
             authInfo = (TAuth)query.getSingleResult();

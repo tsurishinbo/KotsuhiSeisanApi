@@ -1,14 +1,14 @@
-package jp.co.stcinc.api.dto;
+package jp.co.stcinc.api.dto.response;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * リクエスト用申請明細DTO
+ * レスポンス用申請明細DTO
  */
 @XmlRootElement
-public class ApplyDetailRequestDto {
+public class ApplyDetailResponseDto {
 
     // 利用日
     @Getter @Setter
@@ -18,6 +18,10 @@ public class ApplyDetailRequestDto {
     @Getter @Setter
     private String order_id;
 
+    // 作業名
+    @Getter @Setter
+    private String order_name;
+    
     // 出張場所
     @Getter @Setter
     private String place;
@@ -28,8 +32,12 @@ public class ApplyDetailRequestDto {
 
     // 交通手段コード
     @Getter @Setter
-    private String means_id;
+    private Integer means_id;
 
+    // 交通手段名
+    @Getter @Setter
+    private String means_name;
+    
     // 出発地
     @Getter @Setter
     private String section_from;
@@ -40,11 +48,11 @@ public class ApplyDetailRequestDto {
 
     // 往復フラグ
     @Getter @Setter
-    private String is_roundtrip;
+    private Integer is_roundtrip;
 
     // 料金
     @Getter @Setter
-    private String fare;
+    private Long fare;
 
     // 備考
     @Getter @Setter

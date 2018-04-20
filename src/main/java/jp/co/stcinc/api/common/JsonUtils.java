@@ -13,6 +13,13 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class JsonUtils {
 
+    /**
+     * JSONデータを構造体に変換する
+     * @param <T> 構造体の型
+     * @param structure 構造体
+     * @param json JSONデータ
+     * @return 構造体
+     */
     public static <T> T parseJson(Class<T> structure, String json) {
         ObjectMapper map = new ObjectMapper();
         T dto;
@@ -24,6 +31,11 @@ public class JsonUtils {
         return dto;
     }
 
+    /**
+     * 構造体をJSONデータに変換する
+     * @param dto 構造体
+     * @return JSONデータ
+     */
     public static String makeJson(Object dto) {
         ObjectMapper map = new ObjectMapper();
         String json;

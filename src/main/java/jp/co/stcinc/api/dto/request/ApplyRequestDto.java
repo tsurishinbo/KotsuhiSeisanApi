@@ -1,4 +1,4 @@
-package jp.co.stcinc.api.dto;
+package jp.co.stcinc.api.dto.request;
 
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,13 +12,13 @@ import org.apache.commons.lang3.StringUtils;
  * 交通費申請APIリクエスト用DTO
  */
 @XmlRootElement
-public class ApplyRequestDto extends BaseRequestDto {
+public class ApplyRequestDto extends AbstractRequestDto {
     
-    // トークン
+    // 社員番号
     @Getter @Setter
-    private String token;
+    private String emp_no;
     
-    // 交通費申請明細リスト
+    // 申請明細リスト
     @Getter @Setter
     private ArrayList<ApplyDetailRequestDto> list;
 
@@ -36,12 +36,8 @@ public class ApplyRequestDto extends BaseRequestDto {
         if (!StringUtils.isNumeric(emp_no)) {
             return false;
         }
-        // トークン
-        if (StringUtils.isEmpty(token)) {
-            return false;
-        }
         // 交通費申請明細リスト
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return false;
         }
         for (ApplyDetailRequestDto dto : list) {
