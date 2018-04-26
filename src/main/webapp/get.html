@@ -10,7 +10,8 @@
                 // API呼出
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8080/KotsuhiSeisanApi/resources/application/get/' + $("#app_id").val(),
+                    //url: 'http://localhost:8080/KotsuhiSeisanApi/resources/application/get/' + $("#app_id").val(),
+                    url: 'http://18.205.184.174:8080/KotsuhiSeisanApi/resources/application/get/' + $("#app_id").val(),
                     data: null,
                     headers: {
                         Authorization: 'Bearer ' + $("#token").val()
