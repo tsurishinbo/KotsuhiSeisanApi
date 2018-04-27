@@ -23,9 +23,27 @@ public class DateUtils {
     }
 
     /**
+     * 指定時間後の日時を取得する
+     * @param hour 加算する時間
+     * @param min 加算する分
+     * @param sec 加算する秒
+     * @return 指定時間後の日時 
+     */
+    public static Date getAddDate(int hour, int min, int sec) {
+        TimeZone tz = TimeZone.getTimeZone("Asia/Tokyo");
+        Calendar c = Calendar.getInstance(tz);
+        c.add(Calendar.HOUR, hour);
+        c.add(Calendar.MINUTE, min);
+        c.add(Calendar.SECOND, sec);
+        
+        return c.getTime();
+        
+    }
+    
+    /**
      * 現在日時の文字列を取得する
      * @param format 日付の書式
-     * @return 現在日時
+     * @return 現在日時の文字列
      */
     public static String getNowDateString(String format) {
         TimeZone tz = TimeZone.getTimeZone("Asia/Tokyo");
@@ -35,6 +53,25 @@ public class DateUtils {
         return sdf.format(c.getTime());
     }
     
+    /**
+     * 指定時間後の日時の文字列を取得する
+     * @param format 日付の書式
+     * @param hour 加算する時間
+     * @param min 加算する分
+     * @param sec 加算する秒
+     * @return 指定時間後の日時の文字列
+     */
+    public static String getAddDateString(String format, int hour, int min, int sec) {
+        TimeZone tz = TimeZone.getTimeZone("Asia/Tokyo");
+        Calendar c = Calendar.getInstance(tz);
+        c.add(Calendar.HOUR, hour);
+        c.add(Calendar.MINUTE, min);
+        c.add(Calendar.SECOND, sec);
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        
+        return sdf.format(c.getTime());
+    }
+
     /**
      * 日付として正しいかをチェックする
      * @param value チェックする日付

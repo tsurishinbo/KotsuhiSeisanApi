@@ -69,12 +69,12 @@ public abstract class AbstractResponseDto {
     }
 
     /**
-     * エラー設定（トークン発行済）
+     * エラー設定（該当トークンなし）
      */
-    public void SetErrorAlreadyIssued() {
+    public void SetErrorNotfoundToken() {
         result = Constants.RESULT_NG;
-        err_code = Constants.ERRCOD_ALREADY_ISSUED;
-        err_message = Constants.ERRMSG_ALREADY_ISSUED;
+        err_code = Constants.ERRCOD_NOTFOUND_TOKEN;
+        err_message = Constants.ERRMSG_NOTFOUND_TOKEN;
     }
 
     /**
@@ -87,7 +87,7 @@ public abstract class AbstractResponseDto {
     }
     
     /**
-     * エラー設定（申請なし）
+     * エラー設定（該当申請なし）
      */
     public void SetErrorNotfoundApplication() {
         result = Constants.RESULT_NG;

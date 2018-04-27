@@ -98,20 +98,13 @@ public class WebService {
                 return JsonUtils.makeJson(responseDto);
             }
             
-            // 認証テーブルのチェック
-            TAuth auth = tAuthFacade.getAuthInfo(empNo);
-            if (auth != null) {
-                // 異常終了（トークン発行済）
-                responseDto.SetErrorAlreadyIssued();
-                return JsonUtils.makeJson(responseDto);
-            }
-            
             // トークン発行
             String token = makeToken(empNo.toString() + DateUtils.getNowDateString("yyyyMMddHHmmss"));
             TAuth newAuth = new TAuth();
-            newAuth.setEmpNo(empNo);
             newAuth.setToken(token);
+            newAuth.setEmpNo(empNo);
             newAuth.setIssued(DateUtils.getNowDate());
+            newAuth.setExpire(DateUtils.getAddDate(1, 0, 0));
             tAuthFacade.create(newAuth);
             
             // 正常終了
@@ -128,7 +121,7 @@ public class WebService {
     }
     
     /**
-     * トークン解除 (DELETE)
+     * トークン削除 (DELETE)
      * @param pAuth HTTPヘッダ(Authorization)
      * @return レスポンス
      */
@@ -140,16 +133,15 @@ public class WebService {
         ReleaseResponseDto responseDto = new ReleaseResponseDto();
         
         try {
-            // トークンのチェック
-            String token = getToken(pAuth);
-            if (token == null || !checkToken(token)) {
-                // 異常終了（トークン不正）
-                responseDto.SetErrorInvalidToken();
+            // 有効期限切れトークンの取得
+            TAuth auth = tAuthFacade.getInvalidToken(getToken(pAuth));
+            if (auth == null) {
+                // 異常終了（該当トークンなし）
+                responseDto.SetErrorNotfoundToken();
                 return JsonUtils.makeJson(responseDto);
             }
             
-            // トークン解除
-            TAuth auth = tAuthFacade.getAuthInfoByToken(token);
+            // 有効期限切れトークンの削除
             tAuthFacade.remove(auth);
             
             // 正常終了
@@ -284,7 +276,7 @@ public class WebService {
             // 交通費申請取得
             TApplication application = tApplicationFacade.getApplication(Integer.parseInt(pId));
             if (application == null) {
-                // 異常終了（申請なし）
+                // 異常終了（該当申請なし）
                 responseDto.SetErrorNotfoundApplication();
                 return JsonUtils.makeJson(responseDto);
             }
@@ -368,7 +360,7 @@ public class WebService {
             // 交通費申請削除
             TApplication application = tApplicationFacade.getApplication(Integer.parseInt(pId));
             if (application == null) {
-                // 異常終了（申請なし）
+                // 異常終了（該当申請なし）
                 responseDto.SetErrorNotfoundApplication();
                 return JsonUtils.makeJson(responseDto);
             }
@@ -429,7 +421,7 @@ public class WebService {
      * @return チェック結果 
      */
     private boolean checkToken(String token) {
-        TAuth auth = tAuthFacade.getAuthInfoByToken(token);
+        TAuth auth = tAuthFacade.getValidToken(token);
         if (auth == null) {
             return false;
         }

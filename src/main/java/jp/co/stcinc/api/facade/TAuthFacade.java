@@ -33,14 +33,19 @@ public class TAuthFacade extends AbstractFacade<TAuth> {
     }
 
     /**
-     * 認証情報を取得する
-     * @param empNo 社員番号
+     * 有効期限内の認証情報を取得する
+     * @param token トークン
      * @return 認証情報
      */
-    public TAuth getAuthInfo(Integer empNo) {
+    public TAuth getValidToken(String token) {
         TAuth authInfo;
-        Query query = em.createNamedQuery("TAuth.findByEmpNo");
-        query.setParameter("empNo", empNo);
+        StringBuilder sql = new StringBuilder();
+        sql.append("select * ");
+        sql.append("from t_auth ");
+        sql.append("where token = ?token ");
+        sql.append("and expire >= current_timestamp ");
+        Query query = em.createNativeQuery(sql.toString(), TAuth.class);
+        query.setParameter("token", token);
         try {
             authInfo = (TAuth)query.getSingleResult();
         } catch (NoResultException e) {
@@ -50,13 +55,18 @@ public class TAuthFacade extends AbstractFacade<TAuth> {
     }
 
     /**
-     * 認証情報を取得する
+     * 有効期限切れの認証情報を取得する
      * @param token トークン
      * @return 認証情報
      */
-    public TAuth getAuthInfoByToken(String token) {
+    public TAuth getInvalidToken(String token) {
         TAuth authInfo;
-        Query query = em.createNamedQuery("TAuth.findByToken");
+        StringBuilder sql = new StringBuilder();
+        sql.append("select * ");
+        sql.append("from t_auth ");
+        sql.append("where token = ?token ");
+        sql.append("and expire < current_timestamp ");
+        Query query = em.createNativeQuery(sql.toString(), TAuth.class);
         query.setParameter("token", token);
         try {
             authInfo = (TAuth)query.getSingleResult();
@@ -65,4 +75,5 @@ public class TAuthFacade extends AbstractFacade<TAuth> {
         }
         return authInfo;
     }
+    
 }

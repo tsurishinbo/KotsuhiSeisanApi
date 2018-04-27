@@ -29,17 +29,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "TAuth.findAll", query = "SELECT t FROM TAuth t")
-    , @NamedQuery(name = "TAuth.findByEmpNo", query = "SELECT t FROM TAuth t WHERE t.empNo = :empNo")
     , @NamedQuery(name = "TAuth.findByToken", query = "SELECT t FROM TAuth t WHERE t.token = :token")
-    , @NamedQuery(name = "TAuth.findByIssued", query = "SELECT t FROM TAuth t WHERE t.issued = :issued")})
+    , @NamedQuery(name = "TAuth.findByEmpNo", query = "SELECT t FROM TAuth t WHERE t.empNo = :empNo")
+    , @NamedQuery(name = "TAuth.findByIssued", query = "SELECT t FROM TAuth t WHERE t.issued = :issued")
+    , @NamedQuery(name = "TAuth.findByExpire", query = "SELECT t FROM TAuth t WHERE t.expire = :expire")})
 public class TAuth implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "emp_no")
-    private Integer empNo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -47,29 +44,31 @@ public class TAuth implements Serializable {
     private String token;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "emp_no")
+    private int empNo;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "issued")
     @Temporal(TemporalType.TIMESTAMP)
     private Date issued;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "expire")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expire;
 
     public TAuth() {
     }
 
-    public TAuth(Integer empNo) {
-        this.empNo = empNo;
-    }
-
-    public TAuth(Integer empNo, String token, Date issued) {
-        this.empNo = empNo;
+    public TAuth(String token) {
         this.token = token;
-        this.issued = issued;
     }
 
-    public Integer getEmpNo() {
-        return empNo;
-    }
-
-    public void setEmpNo(Integer empNo) {
+    public TAuth(String token, int empNo, Date issued, Date expire) {
+        this.token = token;
         this.empNo = empNo;
+        this.issued = issued;
+        this.expire = expire;
     }
 
     public String getToken() {
@@ -80,6 +79,14 @@ public class TAuth implements Serializable {
         this.token = token;
     }
 
+    public int getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(int empNo) {
+        this.empNo = empNo;
+    }
+
     public Date getIssued() {
         return issued;
     }
@@ -88,10 +95,18 @@ public class TAuth implements Serializable {
         this.issued = issued;
     }
 
+    public Date getExpire() {
+        return expire;
+    }
+
+    public void setExpire(Date expire) {
+        this.expire = expire;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (empNo != null ? empNo.hashCode() : 0);
+        hash += (token != null ? token.hashCode() : 0);
         return hash;
     }
 
@@ -102,7 +117,7 @@ public class TAuth implements Serializable {
             return false;
         }
         TAuth other = (TAuth) object;
-        if ((this.empNo == null && other.empNo != null) || (this.empNo != null && !this.empNo.equals(other.empNo))) {
+        if ((this.token == null && other.token != null) || (this.token != null && !this.token.equals(other.token))) {
             return false;
         }
         return true;
@@ -110,7 +125,7 @@ public class TAuth implements Serializable {
 
     @Override
     public String toString() {
-        return "jp.co.stcinc.api.entity.TAuth[ empNo=" + empNo + " ]";
+        return "jp.co.stcinc.api.entity.TAuth[ token=" + token + " ]";
     }
     
 }
