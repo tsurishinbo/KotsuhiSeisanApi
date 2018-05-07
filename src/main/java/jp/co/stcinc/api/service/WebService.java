@@ -1,4 +1,4 @@
-package jp.co.stcinc.service;
+package jp.co.stcinc.api.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
