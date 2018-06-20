@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jp.co.stcinc.api.entity;
 
 import java.io.Serializable;
@@ -5,27 +10,32 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 社員マスタエンティティ
+ *
+ * @author kageyamay
  */
 @Entity
 @Table(name = "m_employee")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MEmployee.findAll", query = "SELECT m FROM MEmployee m")
-    , @NamedQuery(name = "MEmployee.findById", query = "SELECT m FROM MEmployee m WHERE m.id = :id")
-    , @NamedQuery(name = "MEmployee.findByPassword", query = "SELECT m FROM MEmployee m WHERE m.password = :password")
-    , @NamedQuery(name = "MEmployee.findByEmployeeName", query = "SELECT m FROM MEmployee m WHERE m.employeeName = :employeeName")
-    , @NamedQuery(name = "MEmployee.findByBossId", query = "SELECT m FROM MEmployee m WHERE m.bossId = :bossId")
-    , @NamedQuery(name = "MEmployee.findByManager", query = "SELECT m FROM MEmployee m WHERE m.manager = :manager")
-    , @NamedQuery(name = "MEmployee.findByIdAndPassword", query = "SELECT m FROM MEmployee m WHERE m.id = :id and m.password = :password")})
+    @NamedQuery(name = "MEmployee.findAll", query = "SELECT m FROM MEmployee m ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findById", query = "SELECT m FROM MEmployee m WHERE m.id = :id ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findByPassword", query = "SELECT m FROM MEmployee m WHERE m.password = :password ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findByEmployeeName", query = "SELECT m FROM MEmployee m WHERE m.employeeName = :employeeName ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findByBossId", query = "SELECT m FROM MEmployee m WHERE m.bossId = :bossId ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findByIsBoss", query = "SELECT m FROM MEmployee m WHERE m.isBoss = :isBoss ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findByIsManager", query = "SELECT m FROM MEmployee m WHERE m.isManager = :isManager ORDER BY m.id")
+    , @NamedQuery(name = "MEmployee.findByEmail", query = "SELECT m FROM MEmployee m WHERE m.email = :email")
+    , @NamedQuery(name = "MEmployee.findById&Password", query = "SELECT m FROM MEmployee m WHERE m.id = :id AND m.password = :password ORDER BY m.id")})
 public class MEmployee implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,10 +58,32 @@ public class MEmployee implements Serializable {
     private Integer bossId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "manager")
-    private int manager;
-
+    @Column(name = "is_boss")
+    private int isBoss;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "is_manager")
+    private int isManager;
+    @Size(max = 100)
+    @Column(name = "email")
+    private String email;
+    @OneToOne
+    @JoinColumn(name = "boss_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private MEmployee boss;
+    
     public MEmployee() {
+    }
+
+    public MEmployee(Integer id) {
+        this.id = id;
+    }
+
+    public MEmployee(Integer id, String password, String employeeName, int isBoss, int isManager) {
+        this.id = id;
+        this.password = password;
+        this.employeeName = employeeName;
+        this.isBoss = isBoss;
+        this.isManager = isManager;
     }
 
     public Integer getId() {
@@ -86,12 +118,36 @@ public class MEmployee implements Serializable {
         this.bossId = bossId;
     }
 
-    public int getManager() {
-        return manager;
+    public int getIsBoss() {
+        return isBoss;
     }
 
-    public void setManager(int manager) {
-        this.manager = manager;
+    public void setIsBoss(int isBoss) {
+        this.isBoss = isBoss;
+    }
+
+    public int getIsManager() {
+        return isManager;
+    }
+
+    public void setIsManager(int isManager) {
+        this.isManager = isManager;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public MEmployee getBoss() {
+        return boss;
+    }
+
+    public void setBoss(MEmployee boss) {
+        this.boss = boss;
     }
 
     @Override
@@ -116,7 +172,7 @@ public class MEmployee implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.MEmployee[ id=" + id + " ]";
+        return "jp.co.stcinc.kotsuhiseisan.entity.MEmployee[ id=" + id + " ]";
     }
     
 }

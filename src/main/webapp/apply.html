@@ -33,10 +33,11 @@
                 $("#request_param").val(JSON.stringify(request, null, "    "));
                 
                 // API呼出
+                var host = $('input[name=host]:checked').val();
+                var url = 'http://' + host + '/KotsuhiSeisanApi/resources/application/apply';
                 $.ajax({
                     type: 'POST',
-                    //url: 'http://localhost:8080/KotsuhiSeisanApi/resources/application/apply',
-                    url: 'http://18.205.184.174:8080/KotsuhiSeisanApi/resources/application/apply',
+                    url: url,
                     data: JSON.stringify(request),
                     contentType: 'application/json',
                     dataType: 'JSON',
@@ -61,6 +62,13 @@
         <h3>交通費申請API呼出</h3>
         <hr>
         <table>
+            <tr>
+                <td>接続先</td>
+                <td>
+                    <input type="radio" name="host" value="localhost:8080" checked="checked">ローカル
+                    <input type="radio" name="host" value="18.205.184.174:8080">AWS EC2
+                </td>
+            </tr>
             <tr>
                 <td>トークン</td>
                 <td><input type="text" id="token" size="50"/></td>

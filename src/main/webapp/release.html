@@ -8,10 +8,11 @@
         <!--
             function doAction() {
                 // API呼出
+                var host = $('input[name=host]:checked').val();
+                var url = 'http://' + host + '/KotsuhiSeisanApi/resources/application/release';
                 $.ajax({
                     type: 'DELETE',
-                    //url: 'http://localhost:8080/KotsuhiSeisanApi/resources/application/release',
-                    url: 'http://18.205.184.174:8080/KotsuhiSeisanApi/resources/application/release',
+                    url: url,
                     data: null,
                     headers: {
                         Authorization: 'Bearer ' + $("#token").val()
@@ -33,6 +34,13 @@
         <h3>トークン削除API呼出</h3>
         <hr>
         <table>
+            <tr>
+                <td>接続先</td>
+                <td>
+                    <input type="radio" name="host" value="localhost:8080" checked="checked">ローカル
+                    <input type="radio" name="host" value="18.205.184.174:8080">AWS EC2
+                </td>
+            </tr>
             <tr>
                 <td>トークン</td>
                 <td><input type="text" id="token" size="50"/></td>

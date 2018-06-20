@@ -27,17 +27,38 @@ public class GetResponseDto extends AbstractResponseDto {
     private String apply_date;
     
     @Getter @Setter
-    private Integer approve_id;
+    private Integer boss_approve_id;
     
     @Getter @Setter
-    private String approve_name;
+    private String boss_approve_name;
     
     @Getter @Setter
-    private String approve_date;
+    private String boss_approve_date;
     
     @Getter @Setter
-    private Long total_fare;
+    private Integer manager_approve_id;
+    
+    @Getter @Setter
+    private String manager_approve_name;
+    
+    @Getter @Setter
+    private String manager_approve_date;
+    
+    @Getter @Setter
+    private Integer payment_id;
+    
+    @Getter @Setter
+    private String payment_name;
+    
+    @Getter @Setter
+    private String payment_date;
+    
+    @Getter @Setter
+    private Integer total_fare;
 
+    @Getter @Setter
+    private Integer reject_cnt;
+    
     // 申請明細リスト
     @Getter @Setter
     private ArrayList<ApplyDetailResponseDto> list;

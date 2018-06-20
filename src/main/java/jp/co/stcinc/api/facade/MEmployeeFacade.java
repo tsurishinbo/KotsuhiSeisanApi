@@ -40,7 +40,7 @@ public class MEmployeeFacade extends AbstractFacade<MEmployee> {
      */
     public MEmployee getEmployee(Integer id, String password) {
         MEmployee employee;
-        Query query = em.createNamedQuery("MEmployee.findByIdAndPassword");
+        Query query = em.createNamedQuery("MEmployee.findById&Password");
         query.setParameter("id", id);
         query.setParameter("password", password);
         try {

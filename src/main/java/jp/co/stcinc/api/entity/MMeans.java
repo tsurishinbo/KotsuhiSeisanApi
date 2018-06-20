@@ -12,16 +12,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * 交通手段マスタエンティティ
- */
 @Entity
 @Table(name = "m_means")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MMeans.findAll", query = "SELECT m FROM MMeans m")
-    , @NamedQuery(name = "MMeans.findById", query = "SELECT m FROM MMeans m WHERE m.id = :id")
-    , @NamedQuery(name = "MMeans.findByMeans", query = "SELECT m FROM MMeans m WHERE m.means = :means")})
+    @NamedQuery(name = "MMeans.findAll", query = "SELECT m FROM MMeans m ORDER BY m.id")
+    , @NamedQuery(name = "MMeans.findById", query = "SELECT m FROM MMeans m WHERE m.id = :id ORDER BY m.id")
+    , @NamedQuery(name = "MMeans.findByMeans", query = "SELECT m FROM MMeans m WHERE m.means = :means ORDER BY m.id")})
 public class MMeans implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,6 +34,15 @@ public class MMeans implements Serializable {
     private String means;
 
     public MMeans() {
+    }
+
+    public MMeans(Integer id) {
+        this.id = id;
+    }
+
+    public MMeans(Integer id, String means) {
+        this.id = id;
+        this.means = means;
     }
 
     public Integer getId() {
@@ -77,7 +83,7 @@ public class MMeans implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.MMeans[ id=" + id + " ]";
+        return "jp.co.stcinc.kotsuhiseisan.entity.MMeans[ id=" + id + " ]";
     }
     
 }

@@ -12,16 +12,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * 作業マスタエンティティ
- */
 @Entity
 @Table(name = "m_order")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MOrder.findAll", query = "SELECT m FROM MOrder m")
-    , @NamedQuery(name = "MOrder.findById", query = "SELECT m FROM MOrder m WHERE m.id = :id")
-    , @NamedQuery(name = "MOrder.findByOrderName", query = "SELECT m FROM MOrder m WHERE m.orderName = :orderName")})
+    @NamedQuery(name = "MOrder.findAll", query = "SELECT m FROM MOrder m ORDER BY m.id")
+    , @NamedQuery(name = "MOrder.findById", query = "SELECT m FROM MOrder m WHERE m.id = :id ORDER BY m.id")
+    , @NamedQuery(name = "MOrder.findByOrderName", query = "SELECT m FROM MOrder m WHERE m.orderName = :orderName ORDER BY m.id")})
 public class MOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,6 +35,15 @@ public class MOrder implements Serializable {
     private String orderName;
 
     public MOrder() {
+    }
+
+    public MOrder(String id) {
+        this.id = id;
+    }
+
+    public MOrder(String id, String orderName) {
+        this.id = id;
+        this.orderName = orderName;
     }
 
     public String getId() {
@@ -78,7 +84,7 @@ public class MOrder implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.MOrder[ id=" + id + " ]";
+        return "jp.co.stcinc.kotsuhiseisan.entity.MOrder[ id=" + id + " ]";
     }
     
 }

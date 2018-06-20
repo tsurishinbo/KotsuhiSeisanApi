@@ -204,7 +204,7 @@ public class WebService {
             
             // 交通費申請
             int sortNo = 1;
-            Long totalFare = 0L;
+            int totalFare = 0;
             ArrayList<TLine> lines = new ArrayList<>();
             for (ApplyDetailRequestDto applyDetail : applyDetails) {
                 TLine line = new TLine();
@@ -216,7 +216,7 @@ public class WebService {
                 line.setSectionFrom(applyDetail.getSection_from());                               // 出発地
                 line.setSectionTo(applyDetail.getSection_to());                                   // 到着地
                 line.setIsRoundtrip(Integer.parseInt(applyDetail.getIs_roundtrip()));             // 往復フラグ
-                line.setFare(Long.parseLong(applyDetail.getFare()));                              // 料金
+                line.setFare(Integer.parseInt(applyDetail.getFare()));                            // 料金
                 line.setMemo(applyDetail.getMemo());                                              // 備考
                 line.setSortNo(sortNo);                                                           // ソート番号
                 lines.add(line);
@@ -224,12 +224,12 @@ public class WebService {
                 totalFare += Long.parseLong(applyDetail.getFare());
             }
             TApplication application = new TApplication();
-            application.setStatus(Constants.STATUS_WAIT);               // ステータス
-            application.setApplyId(empNo);                              // 申請者ID
-            application.setApplyDate(new Date());                       // 申請日
-            application.setApproveId(mEmployeeFacade.getBossId(empNo)); // 承認者ID
-            application.setTotalFare(totalFare);                        // 料金合計
-            application.setLines(lines);                                // 申請明細
+            application.setStatus(Constants.STATUS_WAIT_BOSS);              // ステータス
+            application.setApplyId(empNo);                                  // 申請者ID
+            application.setApplyDate(new Date());                           // 申請日
+            application.setBossApproveId(mEmployeeFacade.getBossId(empNo)); // 承認者ID
+            application.setTotalFare(totalFare);                            // 料金合計
+            application.setLines(lines);                                    // 申請明細
             tApplicationFacade.create(application);    
             
             // 正常終了
@@ -286,16 +286,28 @@ public class WebService {
             responseDto.setId(application.getId());
             responseDto.setStatus(application.getStatus());
             responseDto.setApply_id(application.getApplyId());
-            responseDto.setApply_date(DateUtils.dateToString(application.getApplyDate(),"yyyyMMdd"));
-            responseDto.setApprove_id(application.getApproveId());
-            responseDto.setApprove_date(DateUtils.dateToString(application.getApproveDate(),"yyyyMMdd"));
+            if (application.getApplicant() != null) {
+                responseDto.setApply_name(application.getApplicant().getEmployeeName());
+            }
+            responseDto.setApply_date(DateUtils.dateToString(application.getApplyDate(), "yyyyMMdd"));
+            responseDto.setBoss_approve_id(application.getBossApproveId());
+            if (application.getBoss() != null) {
+                responseDto.setBoss_approve_name(application.getBoss().getEmployeeName());
+            }
+            responseDto.setBoss_approve_date(DateUtils.dateToString(application.getBossApproveDate(), "yyyyMMdd"));
+            responseDto.setManager_approve_id(application.getManagerApproveId());
+            if (application.getManager() != null) {
+                responseDto.setManager_approve_name(application.getManager().getEmployeeName());
+            }
+            responseDto.setManager_approve_date(DateUtils.dateToString(application.getManagerApproveDate(), "yyyyMMdd"));
+            responseDto.setPayment_id(application.getPaymentId());
+            if (application.getPayer() != null) {
+                responseDto.setPayment_name(application.getPayer().getEmployeeName());
+            }
+            responseDto.setPayment_date(DateUtils.dateToString(application.getPaymentDate(), "yyyyMMdd"));
             responseDto.setTotal_fare(application.getTotalFare());
-            if (application.getApplyEmployee() != null) {
-                responseDto.setApply_name(application.getApplyEmployee().getEmployeeName());
-            }
-            if (application.getApproveEmployee() != null) {
-                responseDto.setApprove_name(application.getApproveEmployee().getEmployeeName());
-            }
+            responseDto.setReject_cnt(application.getRejectCnt());
+
             // *申請明細
             ArrayList<ApplyDetailResponseDto> details = new ArrayList<>();
             for (TLine line : application.getLines()) {
@@ -364,7 +376,7 @@ public class WebService {
                 responseDto.SetErrorNotfoundApplication();
                 return JsonUtils.makeJson(responseDto);
             }
-            if (application.getStatus() != Constants.STATUS_SAVE && application.getStatus() != Constants.STATUS_WAIT) {
+            if (application.getStatus() != Constants.STATUS_SAVE && application.getStatus() != Constants.STATUS_WAIT_BOSS) {
                 // 異常終了（削除不可ステータス）
                 responseDto.SetErrorCannotDelete();
                 return JsonUtils.makeJson(responseDto);

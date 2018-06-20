@@ -125,7 +125,7 @@ public class TAuth implements Serializable {
 
     @Override
     public String toString() {
-        return "jp.co.stcinc.api.entity.TAuth[ token=" + token + " ]";
+        return "jp.co.stcinc.kotsuhiseisan.entity.TAuth[ token=" + token + " ]";
     }
     
 }

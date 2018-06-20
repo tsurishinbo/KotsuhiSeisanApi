@@ -20,10 +20,11 @@ public final class Constants {
     /**
      * ステータス
      */
-    public static final Integer STATUS_SAVE      = 1;   // 未申請
-    public static final Integer STATUS_WAIT      = 2;   // 承認待ち
-    public static final Integer STATUS_APPROVED  = 3;   // 承認済
-    public static final Integer STATUS_REJECTION = 4;   // 差戻し
+    public static final Integer STATUS_SAVE         = 0; // 未申請
+    public static final Integer STATUS_WAIT_BOSS    = 1; // 上司承認待ち
+    public static final Integer STATUS_WAIT_MANAGER = 2; // 管理部承認待ち
+    public static final Integer STATUS_WAIT_PAYMENT = 3; // 支払待ち
+    public static final Integer STATUS_PAID         = 4; // 支払済
 
     /**
      * エラーコード

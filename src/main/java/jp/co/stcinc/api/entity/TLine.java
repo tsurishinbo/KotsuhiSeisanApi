@@ -19,26 +19,24 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * 交通費申請明細情報エンティティ
- */
 @Entity
 @Table(name = "t_line")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "TLine.findAll", query = "SELECT t FROM TLine t order by t.sortNo")
-    , @NamedQuery(name = "TLine.findById", query = "SELECT t FROM TLine t WHERE t.id = :id order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByApplicationId", query = "SELECT t FROM TLine t WHERE t.applicationId = :applicationId order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByUsedDate", query = "SELECT t FROM TLine t WHERE t.usedDate = :usedDate order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByOrderId", query = "SELECT t FROM TLine t WHERE t.orderId = :orderId order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByPlace", query = "SELECT t FROM TLine t WHERE t.place = :place order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByPurpose", query = "SELECT t FROM TLine t WHERE t.purpose = :purpose order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByMeansId", query = "SELECT t FROM TLine t WHERE t.meansId = :meansId order by t.sortNo")
-    , @NamedQuery(name = "TLine.findBySectionFrom", query = "SELECT t FROM TLine t WHERE t.sectionFrom = :sectionFrom order by t.sortNo")
-    , @NamedQuery(name = "TLine.findBySectionTo", query = "SELECT t FROM TLine t WHERE t.sectionTo = :sectionTo order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByIsRoundtrip", query = "SELECT t FROM TLine t WHERE t.isRoundtrip = :isRoundtrip order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByFare", query = "SELECT t FROM TLine t WHERE t.fare = :fare order by t.sortNo")
-    , @NamedQuery(name = "TLine.findByMemo", query = "SELECT t FROM TLine t WHERE t.memo = :memo order by t.sortNo")})
+    @NamedQuery(name = "TLine.findAll", query = "SELECT t FROM TLine t ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findById", query = "SELECT t FROM TLine t WHERE t.id = :id ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByApplicationId", query = "SELECT t FROM TLine t WHERE t.applicationId = :applicationId ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByUsedDate", query = "SELECT t FROM TLine t WHERE t.usedDate = :usedDate ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByOrderId", query = "SELECT t FROM TLine t WHERE t.orderId = :orderId ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByPlace", query = "SELECT t FROM TLine t WHERE t.place = :place ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByPurpose", query = "SELECT t FROM TLine t WHERE t.purpose = :purpose ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByMeansId", query = "SELECT t FROM TLine t WHERE t.meansId = :meansId ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findBySectionFrom", query = "SELECT t FROM TLine t WHERE t.sectionFrom = :sectionFrom ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findBySectionTo", query = "SELECT t FROM TLine t WHERE t.sectionTo = :sectionTo ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByIsRoundtrip", query = "SELECT t FROM TLine t WHERE t.isRoundtrip = :isRoundtrip ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByFare", query = "SELECT t FROM TLine t WHERE t.fare = :fare ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findByMemo", query = "SELECT t FROM TLine t WHERE t.memo = :memo ORDER BY t.sortNo")
+    , @NamedQuery(name = "TLine.findBySortNo", query = "SELECT t FROM TLine t WHERE t.sortNo = :sortNo ORDER BY t.sortNo")})
 public class TLine implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -90,7 +88,7 @@ public class TLine implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "fare")
-    private Long fare;
+    private int fare;
     @Size(max = 2147483647)
     @Column(name = "memo")
     private String memo;
@@ -104,8 +102,26 @@ public class TLine implements Serializable {
     @OneToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
     private MOrder order;
-    
+
     public TLine() {
+    }
+
+    public TLine(Integer id) {
+        this.id = id;
+    }
+
+    public TLine(Integer id, int applicationId, Date usedDate, String place, String purpose, int meansId, String sectionFrom, String sectionTo, int isRoundtrip, int fare, int sortNo) {
+        this.id = id;
+        this.applicationId = applicationId;
+        this.usedDate = usedDate;
+        this.place = place;
+        this.purpose = purpose;
+        this.meansId = meansId;
+        this.sectionFrom = sectionFrom;
+        this.sectionTo = sectionTo;
+        this.isRoundtrip = isRoundtrip;
+        this.fare = fare;
+        this.sortNo = sortNo;
     }
 
     public Integer getId() {
@@ -188,11 +204,11 @@ public class TLine implements Serializable {
         this.isRoundtrip = isRoundtrip;
     }
 
-    public Long getFare() {
+    public int getFare() {
         return fare;
     }
 
-    public void setFare(Long fare) {
+    public void setFare(int fare) {
         this.fare = fare;
     }
 
@@ -250,7 +266,7 @@ public class TLine implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.TLine[ id=" + id + " ]";
+        return "jp.co.stcinc.kotsuhiseisan.entity.TLine[ id=" + id + " ]";
     }
     
 }

@@ -52,7 +52,7 @@ public class ApplyDetailResponseDto {
 
     // 料金
     @Getter @Setter
-    private Long fare;
+    private Integer fare;
 
     // 備考
     @Getter @Setter
